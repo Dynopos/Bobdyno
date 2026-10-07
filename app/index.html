@@ -439,6 +439,16 @@ nav button[aria-pressed="true"]{color:var(--s1); font-weight:650}
 .il-sejarah ul{margin:6px 0 0;padding-left:4px;list-style:none}
 .il-sejarah li{margin:4px 0;line-height:1.45}
 .il-sejarah i{font-style:normal;color:var(--muted);font-size:12px}
+.il-minta{width:auto;margin-top:10px;padding:8px 12px;font-size:13px}
+.il-pendapat{margin-top:11px;padding:10px 12px;border-radius:11px;border:1px solid var(--border);background:var(--plane)}
+.il-pendapat summary{font-weight:600;color:var(--text-primary);padding:2px 0}
+.il-pendapat summary i{font-style:normal;font-weight:400;color:var(--muted)}
+.il-pendapat .il-pd{margin:9px 0 0;font-size:14px;line-height:1.55;color:var(--text-secondary)}
+.il-pendapat .il-pd b{display:block;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:2px}
+.il-pendapat ul{margin:2px 0 0;padding-left:18px}
+.il-pend-aksi{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+.il-pend-aksi .btn{width:auto;padding:8px 12px;font-size:13px}
 .il-rehat{margin:16px 2px 8px;padding:14px 16px;border-radius:14px;border:1px dashed var(--axis);
   color:var(--text-secondary);font-size:14px;line-height:1.6;text-align:center}
 .tagline{font-size:11.5px;color:var(--muted);letter-spacing:0;text-transform:none;font-weight:400;margin-top:2px;line-height:1.25;white-space:nowrap}
@@ -2638,6 +2648,8 @@ const IL_TAHAP = {tinggi:0, sederhana:1, rendah:2};
 const IL_REHAT = 'Penat? Tak apa, rehat dulu. Ilham kamu dah tersimpan. Tapi ingat — salah satu ilham ini mungkin akan mengubah masa depan kamu.';
 const IL_NOTA  = 'Tulis bila ia datang. Draf disimpan sendiri dalam telefon ini. Bila report malam dijana, ilham dihantar kepada AI supaya coach boleh bantu ia bergerak.';
 const ilBuka = new Set();   // kad yang sedang dibuka, supaya kekal terbuka selepas dikemas kini
+const ilPendBuka = new Set();   // bahagian pendapat AI yang sedang dibuka
+const ilMinta = new Set();      // ilham yang sedang menunggu pendapat AI
 
 function ilList(){ db.ilham ??= []; return db.ilham; }
 function ilCari(id){ return ilList().find(x=>x.id===id); }
@@ -2702,6 +2714,7 @@ function ilKad(x){
     <div class="t il-t">${esc(x.teks)}</div>
     ${x.langkah ? `<div class="il-langkah"><div><small>Langkah seterusnya</small>${esc(x.langkah)}</div>
         <button class="btn ghost" type="button" data-il="siap">✓ Siap</button></div>` : ''}
+    ${ilPendapatHTML(x)}
     <details class="il-urus"${ilBuka.has(x.id)?' open':''}>
       <summary>${x.keutamaan||x.langkah||siap.length ? 'Urus ilham ni' : 'Tetapkan keutamaan &amp; langkah seterusnya'}</summary>
       <span class="il-lbl">Keutamaan</span>
@@ -2719,6 +2732,54 @@ function ilKad(x){
       <button class="btn ghost" type="button" data-il="ubah">Simpan perubahan</button>
     </details>
   </div>`;
+}
+
+/* Pendapat AI untuk satu ilham — hanya bila pengguna menekan butang.
+   Teks ilham dihantar ke /api/ilham (OpenAI), jawapan disimpan dalam ilham itu
+   supaya boleh dibaca semula tanpa memanggil AI lagi. */
+function ilPendapatHTML(x){
+  const p = x.pendapat, sibuk = ilMinta.has(x.id);
+  const label = sibuk ? 'Bob sedang berfikir…' : (p ? '↻ Minta semula' : '✨ Minta pendapat AI');
+  const butang = `<button class="btn ghost${p ? '' : ' il-minta'}" type="button" data-il="pendapat"${sibuk ? ' disabled' : ''}>${label}</button>`;
+  if(!p) return butang;
+  const bhg = (tajuk, isi)=> isi ? `<div class="il-pd"><b>${tajuk}</b>${isi}</div>` : '';
+  return `<details class="il-pendapat" data-pend${ilPendBuka.has(x.id) ? ' open' : ''}>
+      <summary>✨ Pendapat AI <i>· ${relLabel(p.date)}</i></summary>
+      ${bhg('Kekuatan', esc(p.kekuatan))}
+      ${bhg('Perlu diuji dulu', esc(p.risiko))}
+      ${bhg('Soalan untuk kamu', (p.soalan||[]).length ? `<ul>${p.soalan.map(q=>`<li>${esc(q)}</li>`).join('')}</ul>` : '')}
+      ${bhg('Langkah pertama', esc(p.langkah_pertama))}
+      <div class="il-pend-aksi">
+        ${p.langkah_pertama && p.langkah_pertama !== x.langkah
+          ? `<button class="btn ghost" type="button" data-il="jadikan">Jadikan langkah seterusnya</button>` : ''}
+        ${butang}
+      </div>
+    </details>`;
+}
+
+async function ilPendapat(x){
+  if(ilMinta.has(x.id)) return;
+  ilMinta.add(x.id); renderIlham();
+  try{
+    const r = await fetch('/api/ilham', { method:'POST',
+      headers:{'content-type':'application/json', 'x-bob-peranti':peranti()},
+      body: JSON.stringify({ nama:U(), ilham:x.teks, keutamaan:x.keutamaan||'', langkah:x.langkah||'',
+                             langkah_siap:(x.langkahSiap||[]).slice(0,5).map(t=>t.teks) }) });
+    const ct = r.headers.get('content-type')||'';
+    if(!ct.includes('json'))
+      throw new Error(r.status===404 ? 'Pendapat AI belum tersedia di pelayan. Cuba lagi nanti.' : `Pelayan balas ${r.status}.`);
+    const j = await r.json();
+    if(!r.ok) throw new Error(j.error || `Pelayan ${r.status}`);
+    x.pendapat = { kekuatan:String(j.kekuatan||''), risiko:String(j.risiko||''),
+                   soalan:(Array.isArray(j.soalan) ? j.soalan : []).slice(0,3).map(String),
+                   langkah_pertama:String(j.langkah_pertama||''), date:today(), ts:Date.now() };
+    x.dikemas = Date.now(); ilPendBuka.add(x.id);
+    save(); kira('ilham_pendapat'); toast('✓ Pendapat AI sedia');
+  }catch(e){
+    toast(e instanceof TypeError ? 'Perlu internet untuk pendapat AI' : String(e.message||e).slice(0,90));
+  }finally{
+    ilMinta.delete(x.id); renderIlham();
+  }
 }
 
 function renderIlham(){
@@ -2742,7 +2803,8 @@ document.addEventListener('visibilitychange', ()=>{ if(document.hidden) ilDrafSi
 document.getElementById('ilSenarai').addEventListener('toggle', e=>{
   if(e.target.tagName!=='DETAILS') return;
   const k = e.target.closest('[data-id]'); if(!k) return;
-  e.target.open ? ilBuka.add(k.dataset.id) : ilBuka.delete(k.dataset.id);
+  const set = e.target.hasAttribute('data-pend') ? ilPendBuka : ilBuka;
+  e.target.open ? set.add(k.dataset.id) : set.delete(k.dataset.id);
 }, true);
 document.getElementById('ilSenarai').addEventListener('keydown', e=>{
   if(e.key==='Enter' && e.target.classList.contains('il-in')){
@@ -2753,7 +2815,11 @@ document.getElementById('ilSenarai').addEventListener('click', ev=>{
   const b = ev.target.closest('[data-il]'); if(!b) return;
   const kad = b.closest('[data-id]'); const x = kad && ilCari(kad.dataset.id); if(!x) return;
   const aksi = b.dataset.il;
-  if(aksi==='kut'){
+  if(aksi==='pendapat'){ ilPendapat(x); return; }
+  if(aksi==='jadikan'){
+    x.langkah = x.pendapat?.langkah_pertama || x.langkah;
+    toast('✓ Dijadikan langkah seterusnya');
+  } else if(aksi==='kut'){
     x.keutamaan = x.keutamaan===b.dataset.k ? '' : b.dataset.k;
   } else if(aksi==='langkah'){
     x.langkah = kad.querySelector('.il-in').value.trim();

@@ -588,7 +588,7 @@ nav button[aria-pressed="true"]{color:var(--s1); font-weight:650}
     <div class="jb-row">
       <button class="btn" id="ilSave">Simpan ilham ni</button>
     </div>
-    <p class="note" id="ilNote">Tulis bila ia datang. Draf disimpan sendiri, dan ilham kamu kekal dalam telefon ini sahaja.</p>
+    <p class="note" id="ilNote">Tulis bila ia datang. Draf disimpan sendiri dalam telefon ini. Bila report malam dijana, ilham dihantar kepada AI supaya coach boleh bantu ia bergerak.</p>
   </div>
 
   <div id="ilSenarai"></div>
@@ -2015,7 +2015,8 @@ function renderRepCard(){
       ? '✨ Jana report malam ini' : `✨ Jana report ${relLabel(vd)}`;
   }
   document.getElementById('repHint').textContent =
-    'Saranan ditulis oleh Bob Dyno AI. Perlu internet — kalau talian putus, enjin sandaran ambil alih sementara.';
+    'Saranan ditulis oleh Bob Dyno AI. Data hari ini — aktiviti, refleksi, catatan sunyi dan ilham — dihantar kepada AI '
+    + '(OpenAI) untuk menulis report. Perlu internet — kalau talian putus, enjin sandaran ambil alih sementara.';
 }
 document.getElementById('genBtn').onclick = ()=> genReport(pickedDate());
 
@@ -2624,8 +2625,10 @@ function maybeAutoReport(){
 
 /* ─────────────  ILHAM  ─────────────
    Idea yang terlintas sekelip mata — bisnes, ubah hidup, bantu masyarakat.
-   Disimpan dalam db.ilham di telefon ini sahaja. Teks ilham tidak pernah
-   dihantar ke mana-mana pelayan; kira() hanya menghantar nama peristiwa. */
+   Disimpan dalam db.ilham di telefon ini. Teks ilham hanya keluar dari telefon
+   bila report malam dijana (ilhamUntukCoach -> /api/coach -> OpenAI). Menulis,
+   menyusun dan mengurus ilham tidak menghantar teks; kira() hanya menghantar
+   nama peristiwa. */
 const IL_KUT = [
   {id:'tinggi',    label:'Tinggi',    c:'var(--critical)'},
   {id:'sederhana', label:'Sederhana', c:'var(--s4)'},
@@ -2633,7 +2636,7 @@ const IL_KUT = [
 ];
 const IL_TAHAP = {tinggi:0, sederhana:1, rendah:2};
 const IL_REHAT = 'Penat? Tak apa, rehat dulu. Ilham kamu dah tersimpan. Tapi ingat — salah satu ilham ini mungkin akan mengubah masa depan kamu.';
-const IL_NOTA  = 'Tulis bila ia datang. Draf disimpan sendiri, dan ilham kamu kekal dalam telefon ini sahaja.';
+const IL_NOTA  = 'Tulis bila ia datang. Draf disimpan sendiri dalam telefon ini. Bila report malam dijana, ilham dihantar kepada AI supaya coach boleh bantu ia bergerak.';
 const ilBuka = new Set();   // kad yang sedang dibuka, supaya kekal terbuka selepas dikemas kini
 
 function ilList(){ db.ilham ??= []; return db.ilham; }

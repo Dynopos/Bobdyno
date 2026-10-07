@@ -1,0 +1,6 @@
+# GitHub Pages (nadi.bobdyno.my) — laman pendaratan sahaja.
+# App Bob Dyno di folder app/ dihoskan di Netlify (bobdyno.my), bukan di sini.
+exclude:
+  - app/
+  - netlify.toml
+  - README.md

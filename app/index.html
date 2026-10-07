@@ -407,6 +407,15 @@ nav button[aria-pressed="true"]{color:var(--s1); font-weight:650}
   border:1px solid rgba(27,175,122,.28);
   font-size:15.5px;line-height:1.6;color:var(--text-primary)}
 .jb-kosong{color:var(--text-secondary);font-size:14px;line-height:1.6;padding:16px 2px}
+/* Report: ringkasan tiga bahagian */
+.rp-baris{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:none;border:0;
+  border-top:1px solid var(--border);padding:12px 2px;cursor:pointer;font-family:var(--font);color:var(--text-primary)}
+.rp-baris:first-of-type{border-top:0}
+.rp-baris .rp-ic{font-size:22px;line-height:1;flex:none;width:30px;text-align:center}
+.rp-baris b{display:block;font-size:15px}
+.rp-baris small{display:block;font-size:13px;color:var(--text-secondary);margin-top:2px;line-height:1.4}
+.rp-baris > span:nth-child(2){flex:1;min-width:0}
+.rp-baris .rp-anak{color:var(--muted);font-size:20px;flex:none}
 /* Ilham */
 .il-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
 .il-kut{font-size:11px;font-weight:700;letter-spacing:.03em;padding:3px 9px;border-radius:99px;
@@ -502,41 +511,21 @@ nav button[aria-pressed="true"]{color:var(--s1); font-weight:650}
     <button class="btn ghost" id="saveRef">Simpan refleksi</button>
   </div>
 
+</section>
+
+<!-- ══════════ PROGRESS ══════════ -->
+<section class="view" id="v-progress">
+  <div class="jb-hero">
+    <h2>Report</h2>
+    <p>Kebaikan, kaizen dan ilham kamu — dalam satu tempat.</p>
+  </div>
+
+  <div class="card" id="rpRingkas"></div>
   <div class="card" id="repCard">
     <h2>Report malam <span class="sub">— coach Bob Dyno</span></h2>
     <div id="repPreview"></div>
     <button class="btn" id="genBtn" style="margin-top:10px">✨ Jana report malam ini</button>
     <div class="note" id="repHint"></div>
-  </div>
-
-</section>
-
-<!-- ══════════ PROGRESS ══════════ -->
-<section class="view" id="v-progress">
-
-  <div class="card">
-    <div class="row-between">
-      <h2 style="margin:0">Aktiviti 7 hari lepas</h2>
-    </div>
-    <div id="chartWeek"></div>
-    <div class="note">Bar = jumlah aktiviti direkod hari tersebut. Nombor dilabel terus atas bar.</div>
-  </div>
-
-  <div class="card">
-    <div class="row-between">
-      <h2 style="margin:0">Imbangan kategori</h2>
-      <div class="seg-ctl" id="rangeCtl">
-        <button data-r="7" aria-pressed="true">7 hari</button>
-        <button data-r="30" aria-pressed="false">30 hari</button>
-        <button data-r="0" aria-pressed="false">Semua</button>
-      </div>
-    </div>
-    <div id="chartCats"></div>
-    <details>
-      <summary>Lihat sebagai jadual (table view)</summary>
-      <table id="catTable"></table>
-    </details>
-    <div class="note" id="balanceNote"></div>
   </div>
 
   <div class="card">
@@ -546,11 +535,6 @@ nav button[aria-pressed="true"]{color:var(--s1); font-weight:650}
       <summary>Ubah sasaran mingguan</summary>
       <div id="targetEdit" style="padding-top:6px"></div>
     </details>
-  </div>
-
-  <div class="card">
-    <h2>Konsistensi 12 minggu <span class="sub">— consistency heatmap</span></h2>
-    <div id="chartHeat"></div>
   </div>
 
   <div class="card">
@@ -704,8 +688,8 @@ nav button[aria-pressed="true"]{color:var(--s1); font-weight:650}
 
 <nav>
   <button data-v="baik" aria-pressed="true"><span class="ic">🌱</span>Catatan Sunyi</button>
-  <button data-v="today" aria-pressed="false"><span class="ic">☀️</span>Hari Ini</button>
-  <button data-v="progress" aria-pressed="false"><span class="ic">📈</span>Progress</button>
+  <button data-v="today" aria-pressed="false"><span class="ic">📈</span>Kaizen</button>
+  <button data-v="progress" aria-pressed="false"><span class="ic">📝</span>Report</button>
   <button data-v="ilham" aria-pressed="false"><span class="ic">💡</span>Ilham</button>
   <button data-v="data" aria-pressed="false"><span class="ic">🗂️</span>Rekod</button>
 </nav>
@@ -1065,97 +1049,6 @@ function roundRight(x,y,w,h,r){
   return `M${x},${y} L${x+w-r},${y} Q${x+w},${y} ${x+w},${y+r} L${x+w},${y+h-r} Q${x+w},${y+h} ${x+w-r},${y+h} L${x},${y+h} Z`;
 }
 
-/* 7-day bar chart — single series, sequential blue, direct labels */
-function chartWeek(){
-  const W=340, H=170, padL=6, padR=6, padB=26, padT=22;
-  const days=[]; for(let i=6;i>=0;i--) days.push(shift(today(),-i));
-  const vals = days.map(d=> db.entries.filter(e=>e.date===d).length);
-  const max = Math.max(3, ...vals);
-  const plotH = H-padB-padT, plotW = W-padL-padR;
-  const slot = plotW/7, bw = Math.min(30, slot-12);
-  const svg = svgEl('svg',{viewBox:`0 0 ${W} ${H}`, role:'img',
-    'aria-label':`Aktiviti 7 hari lepas, ${vals.join(', ')}`});
-
-  [0,.5,1].forEach(f=>{
-    const y = padT+plotH*(1-f);
-    svg.appendChild(svgEl('line',{x1:padL,x2:W-padR,y1:y,y2:y,stroke:'var(--grid)','stroke-width':1}));
-  });
-  days.forEach((d,i)=>{
-    const v = vals[i];
-    const x = padL + slot*i + (slot-bw)/2;
-    const h = v/max*plotH;
-    const y = padT+plotH-h;
-    const isToday = d===today();
-    if(v>0){
-      const p = svgEl('path',{d:roundTop(x,y,bw,Math.max(h,4),4),
-        fill: isToday? 'var(--seq-550)':'var(--seq-400)'});
-      svg.appendChild(p);
-      bindTip(p, `${relLabel(d)} — ${v} aktiviti`);
-      const lab = svgEl('text',{x:x+bw/2, y:y-6, 'text-anchor':'middle',
-        'font-size':11.5,'font-weight':650, fill:'var(--text-primary)','font-family':'var(--font)'});
-      lab.textContent = v; svg.appendChild(lab);
-    } else {
-      svg.appendChild(svgEl('path',{d:roundTop(x,padT+plotH-4,bw,4,2), fill:'var(--grid)'}));
-    }
-    const dd = new Date(d+'T12:00:00');
-    const t1 = svgEl('text',{x:x+bw/2, y:H-11,'text-anchor':'middle','font-size':11,
-      fill: isToday?'var(--text-primary)':'var(--muted)','font-weight':isToday?650:400,'font-family':'var(--font)'});
-    t1.textContent = HARI_S[dd.getDay()];
-    svg.appendChild(t1);
-    const t2 = svgEl('text',{x:x+bw/2, y:H-0.5,'text-anchor':'middle','font-size':9.5,
-      fill:'var(--muted)','font-family':'var(--font)'});
-    t2.textContent = dd.getDate(); svg.appendChild(t2);
-  });
-  svg.appendChild(svgEl('line',{x1:padL,x2:W-padR,y1:padT+plotH,y2:padT+plotH,stroke:'var(--axis)','stroke-width':1}));
-  const host = document.getElementById('chartWeek'); host.innerHTML=''; host.appendChild(svg);
-}
-
-/* Category balance — horizontal bars, direct labels (relief for low-contrast hues) */
-let range = 7;
-function chartCats(){
-  const list = entriesIn(range||0);
-  const counts = countByCat(list);
-  const max = Math.max(1, ...Object.values(counts));
-  const rowH = 30, W=340, labW=104, barW=W-labW-34;
-  const H = CATS.length*rowH;
-  const svg = svgEl('svg',{viewBox:`0 0 ${W} ${H}`, role:'img','aria-label':'Imbangan kategori'});
-  CATS.forEach((c,i)=>{
-    const y = i*rowH;
-    const v = counts[c.id];
-    const w = v/max*barW;
-    const lab = svgEl('text',{x:0,y:y+rowH/2+4,'font-size':12,fill:'var(--text-secondary)','font-family':'var(--font)'});
-    lab.textContent = c.label; svg.appendChild(lab);
-    svg.appendChild(svgEl('rect',{x:labW,y:y+7,width:barW,height:14,rx:4,fill:'var(--grid)'}));
-    if(v>0){
-      const p = svgEl('path',{d:roundRight(labW,y+7,Math.max(w,6),14,4), fill:c.color});
-      svg.appendChild(p); bindTip(p, `${c.label}: ${v} aktiviti`);
-    }
-    const num = svgEl('text',{x:labW+barW+8,y:y+rowH/2+4,'font-size':12.5,'font-weight':650,
-      fill: v>0?'var(--text-primary)':'var(--muted)','font-family':'var(--font)'});
-    num.textContent = v; svg.appendChild(num);
-  });
-  const host=document.getElementById('chartCats'); host.innerHTML=''; host.appendChild(svg);
-
-  // table view (accessibility relief)
-  const tot = Object.values(counts).reduce((a,b)=>a+b,0) || 1;
-  document.getElementById('catTable').innerHTML =
-    '<tr><th>Kategori</th><th class="num">Aktiviti</th><th class="num">%</th></tr>' +
-    CATS.map(c=>`<tr><td>${c.icon} ${c.label}</td><td class="num">${counts[c.id]}</td><td class="num">${Math.round(counts[c.id]/tot*100)}%</td></tr>`).join('');
-
-  // insight
-  const sorted = CATS.slice().sort((a,b)=>counts[a.id]-counts[b.id]);
-  const weak = sorted[0], strong = sorted[sorted.length-1];
-  document.getElementById('balanceNote').textContent = list.length
-    ? `Paling kuat: ${strong.label} (${counts[strong.id]}). Paling terabai: ${weak.label} (${counts[weak.id]}) — cuba isi satu aktiviti kategori ni minggu depan.`
-    : 'Belum ada data untuk tempoh ini.';
-}
-document.getElementById('rangeCtl').onclick = ev=>{
-  const b = ev.target.closest('button'); if(!b) return;
-  range = +b.dataset.r;
-  [...ev.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed', x===b));
-  chartCats();
-};
-
 /* Weekly targets */
 function renderTargets(){
   const from = weekStartMonday();
@@ -1177,46 +1070,6 @@ function renderTargets(){
   document.querySelectorAll('#targetEdit input').forEach(inp=>{
     inp.onchange = ()=>{ db.targets[inp.dataset.t] = Math.max(0, +inp.value||0); save(); renderTargets(); };
   });
-}
-
-/* Consistency heatmap — sequential blue */
-function chartHeat(){
-  const weeks=12, cell=13, gap=3.5, W=340;
-  const gridW = weeks*(cell+gap)-gap, offX = 22, offY = 14;
-  const H = offY + 7*(cell+gap);
-  const svg = svgEl('svg',{viewBox:`0 0 ${W} ${H}`, role:'img','aria-label':'Heatmap konsistensi 12 minggu'});
-  const dow = (new Date().getDay()+6)%7;
-  const start = shift(today(), -(dow + (weeks-1)*7));
-  const byDay = {}; db.entries.forEach(e=> byDay[e.date]=(byDay[e.date]||0)+1);
-  const steps = ['var(--grid)','var(--seq-100)','var(--seq-250)','var(--seq-400)','var(--seq-700)'];
-  ['I','','R','','J','','A'].forEach((t,i)=>{
-    if(!t) return;
-    const e = svgEl('text',{x:0,y:offY+i*(cell+gap)+cell-2,'font-size':9,fill:'var(--muted)','font-family':'var(--font)'});
-    e.textContent=t; svg.appendChild(e);
-  });
-  for(let w=0; w<weeks; w++){
-    for(let d=0; d<7; d++){
-      const date = shift(start, w*7+d);
-      if(date > today()) continue;
-      const v = byDay[date]||0;
-      const s = v===0?0 : v===1?1 : v===2?2 : v<=4?3:4;
-      const r = svgEl('rect',{x:offX+w*(cell+gap), y:offY+d*(cell+gap), width:cell, height:cell, rx:3.5,
-        fill:steps[s]});
-      svg.appendChild(r);
-      bindTip(r, `${pretty(date)} — ${v} aktiviti`);
-    }
-  }
-  const lg = svgEl('text',{x:offX, y:9,'font-size':9.5,fill:'var(--muted)','font-family':'var(--font)'});
-  lg.textContent='kurang → banyak'; svg.appendChild(lg);
-  [1,2,3,4].forEach((s,i)=>{
-    svg.appendChild(svgEl('rect',{x:offX+gridW-4*(cell+2)+i*(cell+2), y:1, width:cell-3, height:cell-3, rx:2.5, fill:steps[s]}));
-  });
-  const host=document.getElementById('chartHeat'); host.innerHTML=''; host.appendChild(svg);
-  const days = activeDays();
-  let hit=0; for(let i=0;i<84;i++) if(days.has(shift(today(),-i))) hit++;
-  const n = document.createElement('div'); n.className='note';
-  n.textContent = `${hit} daripada 84 hari lepas ada rekod (${Math.round(hit/84*100)}% konsisten). Warna biru makin kuat = makin banyak aktiviti hari tu.`;
-  host.appendChild(n);
 }
 
 /* ─────────────  HISTORY  ───────────── */
@@ -2511,7 +2364,7 @@ kira('buka_app');
 (function(){
   const q=new URLSearchParams(location.search).get('tab');
   const h=(location.hash||'').replace('#','');
-  const peta={sunyi:'baik', baik:'baik', 'hari-ini':'today', today:'today',
+  const peta={sunyi:'baik', baik:'baik', 'hari-ini':'today', today:'today', kaizen:'today', report:'progress',
               progress:'progress', rekod:'data', data:'data', ilham:'ilham', idea:'ilham'};
   const v=peta[q]||peta[h];
   if(!v) return;
@@ -2868,8 +2721,35 @@ document.getElementById('ilSenarai').addEventListener('click', ev=>{
   x.dikemas = Date.now(); save(); renderIlham();
 });
 
+/* ─────────────  REPORT: RINGKASAN  ─────────────
+   Satu pandangan untuk tiga bahagian hidup: kebaikan, kaizen, ilham.
+   Setiap baris membawa ke tabnya. */
+function renderRingkasan(){
+  const box = document.getElementById('rpRingkas'); if(!box) return;
+  const d = today();
+  const baik = (db.baik||[]).filter(x=>x.date===d).length;
+  const akt  = db.entries.filter(e=>e.date===d).length;
+  const il   = db.ilham||[];
+  const ilBaru    = il.filter(x=>x.date===d).length;
+  const ilLangkah = il.reduce((n,x)=> n + (x.langkahSiap||[]).filter(t=>t.date===d).length, 0);
+  const ilTinggi  = il.filter(x=>x.keutamaan==='tinggi').length;
+  const st = streak();
+  const baris = (v, ic, tajuk, isi)=>`<button class="rp-baris" type="button" data-pergi="${v}">
+      <span class="rp-ic">${ic}</span><span><b>${tajuk}</b><small>${isi}</small></span><span class="rp-anak">›</span></button>`;
+  box.innerHTML = `<h2>Hari ini <span class="sub">— ${pretty(d)}</span></h2>`
+    + baris('baik', '🌱', 'Kebaikan', baik ? `${baik} catatan sunyi` : 'Belum ada catatan sunyi')
+    + baris('today', '📈', 'Kaizen', (akt ? `${akt} aktiviti` : 'Belum ada aktiviti') + ` · streak ${st} hari`)
+    + baris('ilham', '💡', 'Ilham', [ ilBaru ? `${ilBaru} ilham baharu` : 'Tiada ilham baharu',
+                                      ilLangkah ? `${ilLangkah} langkah siap` : '',
+                                      ilTinggi ? `${ilTinggi} keutamaan Tinggi` : '' ].filter(Boolean).join(' · '));
+}
+document.getElementById('rpRingkas').addEventListener('click', ev=>{
+  const b = ev.target.closest('[data-pergi]'); if(!b) return;
+  document.querySelector(`nav button[data-v="${b.dataset.pergi}"]`)?.click();
+});
+
 function renderAll(){
-  try{ jbRender(); sunyiHistori(); }catch(e){} try{ renderIlham(); }catch(e){} renderToday(); chartWeek(); chartCats(); renderTargets(); chartHeat(); renderHistory(); renderRepCard(); renderMemory(); }
+  try{ jbRender(); sunyiHistori(); }catch(e){} try{ renderIlham(); }catch(e){} renderToday(); try{ renderRingkasan(); }catch(e){} renderTargets(); renderHistory(); renderRepCard(); renderMemory(); }
 syncSettings();
 syncDateBanner();
 mirrorState().catch(()=>{});

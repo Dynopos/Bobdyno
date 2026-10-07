@@ -680,7 +680,7 @@ nav button[aria-pressed="true"]{color:var(--s1); font-weight:650}
       Data 100% offline di peranti ini. Tiada akaun.<br><br>
       <a href="quiz.html" style="color:var(--s1)">Buat quiz "Kembali Bangun"</a> —
       untuk kawan yang sedang cuba bangun semula.<br><br>
-      <b>Versi app:</b> <span id="appVer">2026.10.07a</span> · <a href="notis-privasi.html" target="_blank">Notis privasi</a> ·
+      <b>Versi app:</b> <span id="appVer">2026.10.07b</span> · <a href="notis-privasi.html" target="_blank">Notis privasi</a> ·
       <a href="#" id="forceUpd" style="color:var(--s1)">Paksa kemas kini</a>
     </p>
   </div>
@@ -2812,7 +2812,7 @@ if(!(db.settings.name||'').trim()) setTimeout(askName, 400);
 else setTimeout(maybeAutoReport, 700);
 
 /* ─────────────  PWA  ───────────── */
-const APP_VERSION = '2026.10.07a';
+const APP_VERSION = '2026.10.07b';
 if('serviceWorker' in navigator && location.protocol.startsWith('http')){
   addEventListener('load', ()=> navigator.serviceWorker.register('sw.js').catch(()=>{}));
 }

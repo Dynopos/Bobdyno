@@ -279,6 +279,8 @@ nav button[aria-pressed="true"]{color:var(--s1); font-weight:650}
 .rep-done li::before{content:'\2713'; color:var(--good); font-weight:700}
 .rep-fix li::before{content:'\25B2'; color:var(--warning); font-size:11px; top:9px}
 .rep-next li::before{content:'\2192'; color:var(--s1); font-weight:700}
+.rep-pantul p{margin:0;padding-left:11px;border-left:3px solid var(--brand);color:var(--text-secondary);
+  font-size:14px;line-height:1.6}
 .bars-mini{display:flex; gap:6px; margin:2px 0 14px}
 .bars-mini > div{flex:1}
 .bars-mini .lbl{font-size:9.5px; color:var(--muted); text-align:center; margin-top:4px; line-height:1.25}
@@ -1469,6 +1471,10 @@ function buildPayload(date){
        melarang coach memberi markah atau memuji jumlahnya. */
     catatan_sunyi_hari_ini: (db.baik||[]).filter(x=>x.date===date).map(x=>x.teks),
     catatan_sunyi_7_hari: (db.baik||[]).filter(x=>x.ts >= Date.now()-7*864e5).length,
+    /* Ilham dihantar supaya coach boleh bantu SATU ilham bergerak. Ia TIDAK
+       masuk skor atau bintang. Dihadkan kepada 8 yang paling penting. */
+    ilham_aktif: ilhamUntukCoach(),
+    ilham_baharu_hari_ini: (db.ilham||[]).filter(x=>x.date===date).length,
     sasaran_mingguan: db.targets,
     skor_enjin: {jumlah:S.score, dokumentasi:Math.round(S.parts.doc), praktik:Math.round(S.parts.act),
                  refleksi:Math.round(S.parts.ref), follow_through:Math.round(S.parts.fol)}
@@ -1532,7 +1538,8 @@ async function serverReport(date){
   kira('report');
   return {date, src:'ai', stars:Math.max(1,Math.min(5,+j.stars||3)), score:Math.round((+j.stars||3)*20),
           parts:S.parts, verdict:j.verdict||'', analisa:j.analisa||[], done:j.done||[],
-          fix:j.fix||[], next:j.next||[], trend:trendData(date)};
+          fix:j.fix||[], next:j.next||[], kebaikan:j.kebaikan||'', ilham:j.ilham||'',
+          trend:trendData(date)};
 }
 
 /* ── Laluan 2: key sendiri (pilihan lanjutan) ── */
@@ -1548,6 +1555,28 @@ PERATURAN:
 - Suara tegas, yakin, sedikit garang bila perlu — tapi sentiasa berpihak pada ${U()}.
 - JUJUR. Kalau hari tu lemah, cakap terus terang dengan hormat.
 - Panggil dia "${U()}" dalam report.
+
+CATATAN SUNYI — medan "catatan_sunyi_hari_ini" ialah kebaikan yang ${U()} catat untuk dirinya
+sendiri, dalam bahagian app yang memang direka TANPA markah.
+- JANGAN masukkan ia ke dalam skor atau bintang. JANGAN memuji jumlahnya.
+- JANGAN sebut pahala, ganjaran, atau keikhlasan.
+- Tulis medan "kebaikan": 1-2 ayat pantulan yang tenang — siapa yang dia jaga hari ini,
+  atau bahagian hidup mana yang tersentuh. Itu maklumat, bukan pujian. Ia juga boleh
+  menjelaskan harinya — contohnya kalau dia kata dia tak buat apa-apa, tetapi catatannya
+  menunjukkan dia luangkan masa dengan keluarga.
+- Kalau tiada catatan, kosongkan "kebaikan" ("") dan jangan tegur.
+
+ILHAM — idea yang ${U()} tulis sendiri bila ia terlintas: bisnes, ubah hidup, bantu masyarakat.
+Medan "ilham_aktif" menyenaraikannya, paling penting dahulu, dengan keutamaan
+(tinggi/sederhana/rendah/tiada), langkah seterusnya yang dia tetapkan, dan langkah yang dah siap.
+- Ilham BUKAN aktiviti hari ini. JANGAN masukkan ke dalam skor atau bintang.
+- Tulis medan "ilham": 1-2 ayat. Pilih SATU ilham yang paling patut digerakkan sekarang
+  (utamakan keutamaan tinggi, atau langkah seterusnya yang dah lama tertunggak), sebut ia
+  dengan namanya, dan cadang SATU langkah kecil yang konkrit, bawah 30 minit.
+- JANGAN menghukum ilham yang belum disentuh. Ilham yang menunggu itu tak apa — tugas kamu
+  bantu ia bergerak, bukan membuat dia rasa bersalah.
+- Jangan nilai sama ada idea itu bagus atau buruk, melainkan ada risiko yang jelas.
+- Kalau tiada ilham, kosongkan "ilham" ("").
 
 PROSES WAJIB — ikut turutan ini:
 
@@ -1590,7 +1619,9 @@ Balas HANYA JSON sah, tiada teks lain, ikut turutan kunci ini:
  "stars":<1-5, boleh .5>,
  "verdict":"<2-3 ayat, rujuk analisa di atas>",
  "fix":["<kelemahan merentas hari ini, rujuk aktiviti tertentu>", ...max 4],
- "next":["<tindakan konkrit esok, terbit dari naik_taraf di atas>", ...max 4]}`;
+ "next":["<tindakan konkrit esok, terbit dari naik_taraf di atas>", ...max 4],
+ "kebaikan":"<1-2 ayat pantulan tenang tentang catatan sunyi, atau kosong jika tiada>",
+ "ilham":"<1-2 ayat: satu ilham + satu langkah kecil, atau kosong jika tiada ilham>"}`;
 
   const mk = legacy => {
     const b = {model, response_format:{type:'json_object'},
@@ -1610,7 +1641,8 @@ Balas HANYA JSON sah, tiada teks lain, ikut turutan kunci ini:
   if(o.memori_baru) mergeMemory(o.memori_baru, date);
   return {date, src:'ai', stars:Math.max(1,Math.min(5,+o.stars||3)), score:Math.round((+o.stars||3)*20),
           parts:S.parts, verdict:o.verdict||'', analisa:o.analisa||[], done:o.done||[],
-          fix:o.fix||[], next:o.next||[], trend:trendData(date)};
+          fix:o.fix||[], next:o.next||[], kebaikan:String(o.kebaikan||''), ilham:String(o.ilham||''),
+          trend:trendData(date)};
 }
 
 /* ── Render report ── */
@@ -1667,6 +1699,8 @@ function repHTML(rep){
   </div>` : `<div class="rep-sec rep-done"><h4>Apa yang ${U()} dah buat</h4>${li(rep.done)}</div>`}
   <div class="rep-sec rep-fix"><h4>Apa yang perlu diperbaiki</h4>${li(rep.fix)}</div>
   <div class="rep-sec rep-next"><h4>Penambahbaikan untuk esok</h4>${li(rep.next)}</div>
+  ${rep.kebaikan ? `<div class="rep-sec rep-pantul"><h4>🌱 Kebaikan</h4><p>${esc(rep.kebaikan)}</p></div>` : ''}
+  ${rep.ilham ? `<div class="rep-sec rep-pantul"><h4>💡 Ilham</h4><p>${esc(rep.ilham)}</p></div>` : ''}
 
   ${(()=>{ const t = rep.trend || {}; const open = (db.memory?.janji||[]).filter(j=>j.status==='terbuka');
     if(!t.hari_aktif && !open.length) return '';
@@ -1735,6 +1769,10 @@ function reportText(rep){
     L.push(`Purata nota: ${rep.trend.purata_panjang_nota}`);
     L.push(`Purata bintang: ${rep.trend.purata_bintang}`); }
   if(rep.reply){ L.push(''); L.push('— BALASAN SAYA —'); L.push(rep.reply); }
+  /* Bahagian Kebaikan dan Ilham sengaja tidak dimasukkan: teks ini dikongsi
+     melalui e-mel, WhatsApp dan sebagainya, sedangkan catatan sunyi dan ilham
+     adalah peribadi. Ia kekal dipaparkan dalam app. */
+  if(rep.kebaikan || rep.ilham){ L.push(''); L.push('(Bahagian Kebaikan dan Ilham kekal dalam app, tidak disertakan di sini.)'); }
   L.push(''); L.push('Dijana oleh Bob Dyno — NADI');
   return L.join('\n');
 }
@@ -2628,6 +2666,17 @@ function ilSimpan(){
   const note = document.getElementById('ilNote');
   note.textContent = IL_REHAT;
   clearTimeout(ilNotaT); ilNotaT = setTimeout(()=>{ note.textContent = IL_NOTA; }, 8000);
+}
+
+/* Untuk report malam: ilham paling penting dahulu, saiz dihadkan. */
+function ilhamUntukCoach(){
+  return ilSusun().slice(0, 8).map(x=>({
+    ilham: String(x.teks).slice(0, 240),
+    keutamaan: x.keutamaan || 'tiada',
+    langkah_seterusnya: x.langkah || '',
+    langkah_siap: (x.langkahSiap||[]).slice(0, 3).map(t=>String(t.teks).slice(0, 120)),
+    ditulis: x.date
+  }));
 }
 
 /* Tinggi di atas, kemudian Sederhana, Rendah, tanpa keutamaan; terbaru dahulu dalam setiap tahap. */

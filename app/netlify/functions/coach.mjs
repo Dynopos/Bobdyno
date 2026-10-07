@@ -120,10 +120,23 @@ kamu faham harinya dengan lebih penuh — bukan untuk dinilai.
 - JANGAN masukkan ia ke dalam skor atau bintang. Sentuhannya tidak menaikkan markah.
 - JANGAN memuji jumlahnya. "Bagus, 4 kebaikan hari ni!" adalah SALAH.
 - JANGAN sebut pahala, ganjaran, atau keikhlasan.
-- Kamu BOLEH menyebutnya sekali, secara tenang, kalau ia menjelaskan sesuatu tentang
-  harinya — contohnya kalau dia kata dia tak buat apa-apa hari ni, tetapi catatannya
-  menunjukkan dia luangkan masa dengan keluarga. Itu maklumat, bukan pujian.
-- Kalau tiada catatan, JANGAN sebut langsung dan jangan tegur.
+- Tulis medan "kebaikan": 1-2 ayat pantulan yang tenang — siapa yang dia jaga hari ini,
+  atau bahagian hidup mana yang tersentuh. Itu maklumat, bukan pujian. Ia juga boleh
+  menjelaskan harinya — contohnya kalau dia kata dia tak buat apa-apa, tetapi catatannya
+  menunjukkan dia luangkan masa dengan keluarga.
+- Kalau tiada catatan, kosongkan "kebaikan" ("") dan jangan tegur.
+
+ILHAM — idea yang ${nama} tulis sendiri bila ia terlintas: bisnes, ubah hidup, bantu masyarakat.
+Medan "ilham_aktif" menyenaraikannya, paling penting dahulu, dengan keutamaan
+(tinggi/sederhana/rendah/tiada), langkah seterusnya yang dia tetapkan, dan langkah yang dah siap.
+- Ilham BUKAN aktiviti hari ini. JANGAN masukkan ke dalam skor atau bintang.
+- Tulis medan "ilham": 1-2 ayat. Pilih SATU ilham yang paling patut digerakkan sekarang
+  (utamakan keutamaan tinggi, atau langkah seterusnya yang dah lama tertunggak), sebut ia
+  dengan namanya, dan cadang SATU langkah kecil yang konkrit, bawah 30 minit.
+- JANGAN menghukum ilham yang belum disentuh. Ilham yang menunggu itu tak apa — tugas kamu
+  bantu ia bergerak, bukan membuat dia rasa bersalah.
+- Jangan nilai sama ada idea itu bagus atau buruk, melainkan ada risiko yang jelas.
+- Kalau tiada ilham, kosongkan "ilham" ("").
 
 PROSES WAJIB — ikut turutan ini:
 
@@ -183,6 +196,8 @@ Balas HANYA objek JSON sah, tiada teks lain, ikut turutan kunci ini:
  "verdict":"<2-3 ayat, rujuk analisa di atas>",
  "fix":["<kelemahan merentas hari ini, rujuk aktiviti tertentu>", ...max 4],
  "next":["<tindakan konkrit esok, terbit dari naik_taraf di atas>", ...max 4],
+ "kebaikan":"<1-2 ayat pantulan tenang tentang catatan sunyi, atau kosong jika tiada>",
+ "ilham":"<1-2 ayat: satu ilham + satu langkah kecil, atau kosong jika tiada ilham>",
  "memori_baru":{"fakta":["<fakta kekal baharu>", ...max 3],
                 "corak":["<corak baharu>", ...max 2],
                 "janji":[{"teks":"<komitmen>","status":"<terbuka|selesai|gugur>"}, ...max 3],
@@ -274,6 +289,8 @@ Balas HANYA objek JSON sah, tiada teks lain, ikut turutan kunci ini:
       verdict: String(out.verdict || ''),
       fix: (out.fix || []).slice(0, 4).map(String),
       next: (out.next || []).slice(0, 4).map(String),
+      kebaikan: String(out.kebaikan || '').slice(0, 600),
+      ilham: String(out.ilham || '').slice(0, 600),
       memori_baru: {
         fakta: (out.memori_baru?.fakta || []).slice(0, 3).map(x => String(x).slice(0, 180)),
         corak: (out.memori_baru?.corak || []).slice(0, 2).map(x => String(x).slice(0, 180)),

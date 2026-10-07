@@ -13,17 +13,17 @@ Kod app yang dihoskan di Netlify, projek `bobdyno`, https://bobdyno.my.
 
 Pemboleh ubah persekitaran (ditetapkan dalam Netlify, bukan dalam repo):
 `OPENAI_API_KEY`, `STATS_KEY`, serta had pilihan `COACH_MODEL`,
-`COACH_DAILY_CAP`, `BAIK_CAP`, `IP_CAP`, `QUIZ_MODEL`, `QUIZ_DAILY_CAP` dan
-yang berkaitan.
+`COACH_DAILY_CAP`, `BAIK_CAP`, `IP_CAP`, `QUIZ_MODEL`, `QUIZ_DAILY_CAP`,
+`ILHAM_MODEL`, `ILHAM_CAP` (lalai 15 pendapat sehari setiap peranti) dan yang berkaitan.
 
 ## Kandungan
 
-- `index.html` — app utama: Catatan Sunyi, Hari Ini, Progress, Ilham, Rekod
+- `index.html` — app utama: Catatan Sunyi, Kaizen, Report, Ilham, Rekod
 - `quiz.html` — quiz "Kembali Bangun"
 - `stats.html` — papan angka peribadi (perlu `STATS_KEY`)
 - `notis-privasi.html`
 - `sw.js`, `manifest.json`, `icons/` — PWA
-- `netlify/functions/` — `/api/baik`, `/api/coach`, `/api/kira`, `/api/quiz`
+- `netlify/functions/` — `/api/baik`, `/api/coach`, `/api/ilham`, `/api/kira`, `/api/quiz`
 
 Bila `index.html` berubah, naikkan `VERSION` dalam `sw.js` supaya cache
 luar talian dikemas kini.

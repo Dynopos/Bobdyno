@@ -598,7 +598,7 @@ nav button[aria-pressed="true"]{color:var(--s1); font-weight:650}
     <div class="jb-row">
       <button class="btn" id="ilSave">Simpan ilham ni</button>
     </div>
-    <p class="note" id="ilNote">Tulis bila ia datang. Draf disimpan sendiri dalam telefon ini. Bila report malam dijana, ilham dihantar kepada AI supaya coach boleh bantu ia bergerak.</p>
+    <p class="note" id="ilNote">Tulis bila ia datang. Draf disimpan sendiri dalam telefon ini. Ilham hanya dihantar kepada AI bila kamu minta pendapat AI, atau bila report malam dijana.</p>
   </div>
 
   <div id="ilSenarai"></div>
@@ -690,7 +690,7 @@ nav button[aria-pressed="true"]{color:var(--s1); font-weight:650}
       Data 100% offline di peranti ini. Tiada akaun.<br><br>
       <a href="quiz.html" style="color:var(--s1)">Buat quiz "Kembali Bangun"</a> —
       untuk kawan yang sedang cuba bangun semula.<br><br>
-      <b>Versi app:</b> <span id="appVer">2026.10.07b</span> · <a href="notis-privasi.html" target="_blank">Notis privasi</a> ·
+      <b>Versi app:</b> <span id="appVer">2026.10.07c</span> · <a href="notis-privasi.html" target="_blank">Notis privasi</a> ·
       <a href="#" id="forceUpd" style="color:var(--s1)">Paksa kemas kini</a>
     </p>
   </div>
@@ -2636,7 +2636,8 @@ function maybeAutoReport(){
 /* ─────────────  ILHAM  ─────────────
    Idea yang terlintas sekelip mata — bisnes, ubah hidup, bantu masyarakat.
    Disimpan dalam db.ilham di telefon ini. Teks ilham hanya keluar dari telefon
-   bila report malam dijana (ilhamUntukCoach -> /api/coach -> OpenAI). Menulis,
+   bila pengguna menekan "Minta pendapat AI" (ilPendapat -> /api/ilham -> OpenAI)
+   atau bila report malam dijana (ilhamUntukCoach -> /api/coach -> OpenAI). Menulis,
    menyusun dan mengurus ilham tidak menghantar teks; kira() hanya menghantar
    nama peristiwa. */
 const IL_KUT = [
@@ -2646,7 +2647,7 @@ const IL_KUT = [
 ];
 const IL_TAHAP = {tinggi:0, sederhana:1, rendah:2};
 const IL_REHAT = 'Penat? Tak apa, rehat dulu. Ilham kamu dah tersimpan. Tapi ingat — salah satu ilham ini mungkin akan mengubah masa depan kamu.';
-const IL_NOTA  = 'Tulis bila ia datang. Draf disimpan sendiri dalam telefon ini. Bila report malam dijana, ilham dihantar kepada AI supaya coach boleh bantu ia bergerak.';
+const IL_NOTA  = 'Tulis bila ia datang. Draf disimpan sendiri dalam telefon ini. Ilham hanya dihantar kepada AI bila kamu minta pendapat AI, atau bila report malam dijana.';
 const ilBuka = new Set();   // kad yang sedang dibuka, supaya kekal terbuka selepas dikemas kini
 const ilPendBuka = new Set();   // bahagian pendapat AI yang sedang dibuka
 const ilMinta = new Set();      // ilham yang sedang menunggu pendapat AI
@@ -2878,7 +2879,7 @@ if(!(db.settings.name||'').trim()) setTimeout(askName, 400);
 else setTimeout(maybeAutoReport, 700);
 
 /* ─────────────  PWA  ───────────── */
-const APP_VERSION = '2026.10.07b';
+const APP_VERSION = '2026.10.07c';
 if('serviceWorker' in navigator && location.protocol.startsWith('http')){
   addEventListener('load', ()=> navigator.serviceWorker.register('sw.js').catch(()=>{}));
 }

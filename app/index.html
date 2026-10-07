@@ -1302,7 +1302,8 @@ document.getElementById('fileIn').onchange = ev=>{
     try{
       const d = JSON.parse(rd.result);
       if(!Array.isArray(d.entries)) throw 0;
-      db = {entries:d.entries, refl:d.refl||{}, targets:{...DEF_TARGET, ...(d.targets||{})}, reports:d.reports||{}, memory:Object.assign({fakta:[],corak:[],janji:[],progression:'',updated:''}, d.memory||{}), settings:Object.assign({name:'',hour:21,auto:1,key:'',model:''}, d.settings||{})};
+      db = {...d, entries:d.entries, refl:d.refl||{}, targets:{...DEF_TARGET, ...(d.targets||{})}, reports:d.reports||{}, memory:Object.assign({fakta:[],corak:[],janji:[],progression:'',updated:''}, d.memory||{}), settings:Object.assign({name:'',hour:21,auto:1,key:'',model:''}, d.settings||{})};
+      db.baik ??= [];
       window.db = db; syncSettings(); paintName();
       save(); renderAll(); toast('✓ Data dipulihkan');
     }catch(e){ toast('Fail tidak sah'); }

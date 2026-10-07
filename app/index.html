@@ -1,0 +1,2720 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bob Dyno — NADI</title>
+<meta name="description" content="NADI — masih bergerak walaupun perlahan. Catat kebaikan harian kamu, dan denyut pembangunan diri.">
+<link rel="canonical" href="https://bobdyno.my/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://bobdyno.my/">
+<meta property="og:site_name" content="Bob Dyno — NADI">
+<meta property="og:locale" content="ms_MY">
+<meta property="og:title" content="Bob Dyno — NADI">
+<meta property="og:description" content="Masih bergerak walaupun perlahan. Catat kebaikan harian kamu, dan denyut pembangunan diri, bersama coach Bob Dyno.">
+<meta property="og:image" content="https://bobdyno.my/og-v3.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://bobdyno.my/og-v3.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#141210">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<style>
+:root{
+  color-scheme: light;
+  --surface-1:#fcfcfb; --plane:#f9f9f7;
+  --text-primary:#0b0b0b; --text-secondary:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,0.10);
+  --good:#0ca30c; --warning:#fab219; --critical:#d03b3b;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4; --s6:#008300;
+  --seq-100:#cde2fb; --seq-250:#86b6ef; --seq-400:#3987e5; --seq-550:#1c5cab; --seq-700:#0d366b;
+  --brand:#a8790f; --brand-l:#d4a017; --ink-black:#141210;
+  --radius:14px;
+  --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])){
+    color-scheme: dark;
+    --surface-1:#1a1a19; --plane:#0d0d0d;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,0.10);
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#008300;
+    --brand:#e8b93d; --brand-l:#f0c34a; --ink-black:#141210;
+    --seq-100:#184f95; --seq-250:#256abf; --seq-400:#3987e5; --seq-550:#6da7ec; --seq-700:#b7d3f6;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --surface-1:#1a1a19; --plane:#0d0d0d;
+  --text-primary:#ffffff; --text-secondary:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,0.10);
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#008300;
+    --brand:#e8b93d; --brand-l:#f0c34a; --ink-black:#141210;
+  --seq-100:#184f95; --seq-250:#256abf; --seq-400:#3987e5; --seq-550:#6da7ec; --seq-700:#b7d3f6;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--font); background:var(--plane); color:var(--text-primary);
+  font-size:15px; line-height:1.45;
+  padding-bottom:calc(74px + env(safe-area-inset-bottom));
+}
+header{
+  position:sticky; top:0; z-index:20; background:var(--plane);
+  padding:calc(12px + env(safe-area-inset-top)) 16px 10px;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:10px;
+}
+.brand{font-weight:800; font-size:17px; letter-spacing:-0.3px}
+.brand span{color:var(--brand)}
+.dyno{border-radius:11px; overflow:hidden; flex:none; background:var(--ink-black); display:grid; place-items:center}
+.dyno img{width:100%; height:100%; object-fit:cover; display:block}
+.tagline{font-size:9px; letter-spacing:.16em; color:var(--brand); font-weight:700; text-transform:uppercase; margin-top:1px}
+.coach-head{display:flex; align-items:center; gap:10px; margin-bottom:12px}
+.coach-head .nm{font-size:14px; font-weight:800; letter-spacing:-.2px}
+.coach-head .rl{font-size:10.5px; color:var(--muted); letter-spacing:.06em; text-transform:uppercase; font-weight:600}
+.date{font-size:12px; color:var(--muted); margin-top:-2px}
+.spacer{flex:1}
+.icon-btn{
+  width:38px;height:38px;border-radius:11px;border:1px solid var(--border);
+  background:var(--surface-1); color:var(--text-secondary); font-size:16px;
+  display:grid;place-items:center;cursor:pointer
+}
+main{padding:14px 16px 20px; max-width:720px; margin:0 auto}
+.view{display:none} .view.active{display:block}
+.card{
+  background:var(--surface-1); border:1px solid var(--border);
+  border-radius:var(--radius); padding:14px; margin-bottom:12px;
+}
+.card h2{font-size:13px; margin:0 0 10px; color:var(--text-secondary); font-weight:600; letter-spacing:.02em; text-transform:uppercase}
+.card h2 .sub{text-transform:none; letter-spacing:0; font-weight:400; color:var(--muted)}
+/* hero streak */
+.hero{display:flex; align-items:flex-end; gap:14px}
+.hero-num{font-size:52px; font-weight:700; line-height:1; letter-spacing:-2px}
+.hero-lbl{font-size:13px; color:var(--text-secondary); padding-bottom:6px}
+.hero-lbl b{display:block; color:var(--text-primary); font-size:14px}
+.streak-meta{display:flex; gap:16px; margin-top:12px; padding-top:12px; border-top:1px solid var(--grid)}
+.meta-item{font-size:12px; color:var(--muted)}
+.meta-item b{display:block; font-size:17px; color:var(--text-primary); font-weight:650}
+.flame{font-size:26px; padding-bottom:8px}
+.today-pill{
+  display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600;
+  padding:5px 10px; border-radius:999px; margin-top:10px;
+}
+.pill-done{background:color-mix(in srgb, var(--good) 14%, transparent); color:var(--good)}
+.pill-todo{background:color-mix(in srgb, var(--warning) 20%, transparent); color:var(--text-primary)}
+/* category chips */
+.chips{display:flex; flex-wrap:wrap; gap:7px; margin-bottom:10px}
+.chip{
+  display:inline-flex; align-items:center; gap:6px; padding:8px 11px; border-radius:999px;
+  border:1px solid var(--border); background:transparent; color:var(--text-secondary);
+  font-size:13px; font-family:var(--font); cursor:pointer;
+}
+.chip .dot{width:9px;height:9px;border-radius:3px;background:var(--c)}
+.chip[aria-pressed="true"]{border-color:var(--c); background:color-mix(in srgb, var(--c) 12%, transparent); color:var(--text-primary); font-weight:600}
+input[type=text], textarea, select{
+  width:100%; font-family:var(--font); font-size:15px; color:var(--text-primary);
+  background:var(--plane); border:1px solid var(--border); border-radius:10px;
+  padding:11px 12px; margin-bottom:8px; resize:vertical;
+}
+input:focus, textarea:focus, select:focus{outline:2px solid var(--s1); outline-offset:-1px}
+.btn{
+  width:100%; padding:13px; border-radius:11px; border:0; background:var(--s1); color:#fff;
+  font-family:var(--font); font-size:15px; font-weight:650; cursor:pointer;
+}
+.btn.ghost{background:transparent; border:1px solid var(--border); color:var(--text-secondary); font-weight:500}
+.btn.danger{background:transparent; border:1px solid var(--critical); color:var(--critical)}
+.btn-row{display:flex; gap:8px}
+/* entries */
+.entry{display:flex; gap:10px; padding:10px 0; border-bottom:1px solid var(--grid)}
+.entry:last-child{border-bottom:0; padding-bottom:0}
+.entry .bar{width:4px; border-radius:2px; background:var(--c); flex:none}
+.entry .body{flex:1; min-width:0}
+.entry .t{font-weight:600; font-size:14.5px; word-wrap:break-word}
+.entry .m{font-size:12px; color:var(--muted); margin-top:1px}
+.entry .n{font-size:13px; color:var(--text-secondary); margin-top:4px; white-space:pre-wrap}
+.entry .del{background:none;border:0;color:var(--muted);font-size:15px;cursor:pointer;padding:0 2px; flex:none}
+.entry .body{cursor:pointer}
+.add-note{
+  background:none; border:0; padding:4px 0 0; margin:0; cursor:pointer;
+  font-family:var(--font); font-size:12.5px; font-weight:650; color:var(--s1);
+}
+label.fl{display:block; font-size:11px; text-transform:uppercase; letter-spacing:.05em;
+  color:var(--muted); font-weight:700; margin:2px 0 5px}
+.rep-actions{display:flex; gap:7px; margin:4px 0 14px}
+.rep-actions button{
+  flex:1; padding:10px 6px; border-radius:10px; border:1px solid var(--border);
+  background:transparent; color:var(--text-secondary); font-family:var(--font);
+  font-size:12.5px; font-weight:600; cursor:pointer;
+}
+.reply-box{background:var(--plane); border-radius:12px; padding:12px; margin-bottom:14px}
+.reply-box h4{margin:0 0 4px; font-size:11.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); font-weight:700}
+.reply-box .note{margin:0 0 8px}
+.reply-saved{font-size:12.5px; color:var(--good); font-weight:650; margin-top:6px}
+.trend{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+.trend > div{background:var(--plane); border-radius:10px; padding:8px 10px}
+.trend span{display:block; font-size:10.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); font-weight:700}
+.trend b{font-size:14px; font-variant-numeric:tabular-nums}
+.promise{display:flex; gap:8px; align-items:flex-start; padding:7px 0; border-bottom:1px solid var(--grid)}
+.promise:last-child{border-bottom:0}
+.pdot{width:7px;height:7px;border-radius:50%;background:var(--warning);flex:none;margin-top:6px}
+.promise b{display:block; font-size:13.5px; font-weight:600; line-height:1.45}
+.promise i{font-style:normal; font-size:11.5px; color:var(--muted)}
+.mem-item{display:flex; gap:8px; align-items:flex-start; padding:8px 0; border-bottom:1px solid var(--grid); font-size:13.5px; line-height:1.45}
+.mem-item:last-child{border-bottom:0}
+.ayat-sauh{
+  margin-top:12px;padding:14px;border-radius:12px;
+  background:color-mix(in srgb, var(--s4) 10%, transparent);
+  border:1px solid color-mix(in srgb, var(--s4) 26%, transparent);
+}
+.ayat-sauh .ms{font-size:13.5px;line-height:1.55;color:var(--text-primary);font-style:italic}
+.ayat-sauh .ref{font-size:11.5px;color:var(--muted);font-weight:700;margin-top:7px}
+.mini-gen{
+  margin-left:auto; background:transparent; border:1px solid var(--border); border-radius:999px;
+  padding:4px 10px; font-family:var(--font); font-size:11px; font-weight:700;
+  color:var(--s1); cursor:pointer; flex:none;
+}
+.mini-gen.stale{border-color:var(--s2); color:var(--s2)}
+.date-warn{
+  background:color-mix(in srgb, var(--s2) 14%, transparent); color:var(--text-primary);
+  border-radius:10px; padding:8px 11px; font-size:12.5px; line-height:1.45; margin-bottom:10px;
+}
+.date-warn b{color:var(--s2)}
+.date-warn button{
+  background:none; border:0; color:var(--s1); font-family:var(--font); font-size:12.5px;
+  font-weight:700; cursor:pointer; padding:2px 0 0;
+}
+.mem-item .x{background:none;border:0;color:var(--muted);font-size:14px;cursor:pointer;padding:0 2px;flex:none;margin-left:auto}
+.mem-tag{font-size:10px;font-weight:800;padding:2px 6px;border-radius:999px;flex:none;margin-top:2px}
+.tag-open{background:color-mix(in srgb,var(--warning) 22%,transparent);color:var(--text-primary)}
+.tag-done{background:color-mix(in srgb,var(--good) 16%,transparent);color:var(--good)}
+.tag-drop{background:color-mix(in srgb,var(--muted) 20%,transparent);color:var(--text-secondary)}
+.empty{color:var(--muted); font-size:13.5px; padding:6px 0}
+/* charts */
+.legend{display:flex; flex-wrap:wrap; gap:10px; margin-top:10px}
+.lg{display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--text-secondary)}
+.lg i{width:10px;height:10px;border-radius:3px;background:var(--c);display:inline-block}
+svg{display:block; width:100%; height:auto; overflow:visible}
+.seg-ctl{display:flex; gap:4px; background:var(--plane); border:1px solid var(--border); border-radius:9px; padding:3px}
+.seg-ctl button{
+  flex:1; padding:6px 10px; border:0; background:transparent; border-radius:6px;
+  font-family:var(--font); font-size:12.5px; color:var(--text-secondary); cursor:pointer;
+}
+.seg-ctl button[aria-pressed="true"]{background:var(--surface-1); color:var(--text-primary); font-weight:650; box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.row-between{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px}
+/* target meters */
+.tgt{margin-bottom:11px}
+.tgt-head{display:flex; justify-content:space-between; font-size:13px; margin-bottom:5px}
+.tgt-head b{font-weight:600}
+.tgt-head .v{color:var(--text-secondary); font-variant-numeric:tabular-nums}
+.track{height:8px; border-radius:4px; background:var(--grid); overflow:hidden}
+.fill{height:100%; border-radius:4px; background:var(--c); transition:width .4s ease}
+table{width:100%; border-collapse:collapse; font-size:13px}
+th,td{text-align:left; padding:7px 4px; border-bottom:1px solid var(--grid); font-variant-numeric:tabular-nums}
+th{color:var(--muted); font-weight:600; font-size:11.5px; text-transform:uppercase}
+td.num, th.num{text-align:right}
+details summary{cursor:pointer; font-size:12.5px; color:var(--s1); padding:8px 0}
+/* bottom nav */
+nav{
+  position:fixed; left:0; right:0; bottom:0; z-index:30; display:flex;
+  background:var(--surface-1); border-top:1px solid var(--border);
+  padding:8px 8px calc(8px + env(safe-area-inset-bottom));
+}
+nav button{
+  flex:1; background:none; border:0; font-family:var(--font); font-size:11px;
+  color:var(--muted); display:grid; gap:3px; justify-items:center; cursor:pointer; padding:4px;
+}
+nav button .ic{font-size:19px; line-height:1}
+nav button[aria-pressed="true"]{color:var(--s1); font-weight:650}
+.toast{
+  position:fixed; left:50%; transform:translateX(-50%) translateY(20px); bottom:92px;
+  background:var(--text-primary); color:var(--plane); padding:10px 16px; border-radius:999px;
+  font-size:13px; font-weight:600; opacity:0; pointer-events:none; transition:.25s; z-index:60;
+}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+.tip{
+  position:fixed; z-index:50; background:var(--text-primary); color:var(--plane);
+  font-size:12px; padding:6px 9px; border-radius:8px; pointer-events:none; opacity:0;
+  transition:opacity .12s; white-space:nowrap; font-weight:600;
+}
+.tip.show{opacity:1}
+.note{font-size:12px; color:var(--muted); margin-top:8px; line-height:1.5}
+/* ── report sheet ── */
+.sheet{
+  position:fixed; inset:0; z-index:70; background:rgba(0,0,0,.55);
+  display:flex; align-items:flex-end; justify-content:center;
+  opacity:0; pointer-events:none; transition:opacity .22s;
+}
+.sheet.show{opacity:1; pointer-events:auto}
+.sheet-box{
+  background:var(--surface-1); width:100%; max-width:560px; max-height:92vh; overflow-y:auto;
+  border-radius:20px 20px 0 0; padding:18px 18px calc(24px + env(safe-area-inset-bottom));
+  transform:translateY(24px); transition:transform .26s cubic-bezier(.2,.8,.3,1);
+  border-top:3px solid var(--s1);
+}
+.sheet.show .sheet-box{transform:translateY(0)}
+.sheet-head{display:flex; align-items:flex-start; gap:10px; margin-bottom:2px}
+.sheet-head h3{margin:0; font-size:17px; font-weight:700}
+.sheet-head .d{font-size:12px; color:var(--muted)}
+.sheet-x{margin-left:auto; background:none; border:0; font-size:19px; color:var(--muted); cursor:pointer; padding:2px 4px}
+.stars{font-size:30px; letter-spacing:2px; line-height:1.2; margin:10px 0 2px; color:var(--s4)}
+.score-line{font-size:12.5px; color:var(--muted); font-variant-numeric:tabular-nums}
+.verdict{font-size:15px; font-weight:600; margin:10px 0 14px; line-height:1.5}
+.rep-sec{margin-bottom:16px}
+.rep-sec h4{
+  font-size:11.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted);
+  margin:0 0 7px; font-weight:700;
+}
+.rep-sec ul{margin:0; padding-left:0; list-style:none}
+.rep-sec li{
+  font-size:14px; line-height:1.5; padding:7px 0 7px 24px; position:relative;
+  border-bottom:1px solid var(--grid);
+}
+.rep-sec li:last-child{border-bottom:0}
+.rep-sec li::before{position:absolute; left:0; top:7px; font-size:13px}
+.rep-done li::before{content:'\2713'; color:var(--good); font-weight:700}
+.rep-fix li::before{content:'\25B2'; color:var(--warning); font-size:11px; top:9px}
+.rep-next li::before{content:'\2192'; color:var(--s1); font-weight:700}
+.bars-mini{display:flex; gap:6px; margin:2px 0 14px}
+.bars-mini > div{flex:1}
+.bars-mini .lbl{font-size:9.5px; color:var(--muted); text-align:center; margin-top:4px; line-height:1.25}
+.bars-mini .tr{height:6px; border-radius:3px; background:var(--grid); overflow:hidden}
+.bars-mini .fl{height:100%; border-radius:3px; background:var(--s1)}
+.src-tag{
+  display:inline-block; font-size:10.5px; font-weight:700; padding:3px 8px; border-radius:999px;
+  background:color-mix(in srgb, var(--s1) 14%, transparent); color:var(--s1);
+}
+.src-tag.local{background:color-mix(in srgb, var(--warning) 24%, transparent); color:var(--text-primary)}
+.warn-box{
+  background:color-mix(in srgb, var(--warning) 16%, transparent); border-radius:12px;
+  padding:11px 12px; font-size:12.5px; line-height:1.5; margin:10px 0 4px; color:var(--text-primary);
+}
+.warn-box .btn{padding:9px; font-size:13px}
+.an{border:1px solid var(--border); border-radius:12px; padding:11px 12px; margin-bottom:9px; background:var(--plane)}
+.an-top{display:flex; align-items:flex-start; gap:8px}
+.an-t{font-size:14px; font-weight:650; line-height:1.35; flex:1}
+.an-s{
+  font-size:11.5px; font-weight:800; color:var(--sc); flex:none;
+  background:color-mix(in srgb, var(--sc) 15%, transparent); padding:2px 7px; border-radius:999px;
+  font-variant-numeric:tabular-nums;
+}
+.an-j{font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); font-weight:700; margin:3px 0 7px}
+.an-r{font-size:13px; line-height:1.5; color:var(--text-secondary); margin-top:4px}
+.an-r b{display:block; font-size:10.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); font-weight:700}
+.an-r.up{color:var(--text-primary)}
+.an-r.up b{color:var(--s1)}
+.rep-card-stars{font-size:21px; color:var(--s4); letter-spacing:1px}
+.hist-rep{
+  font-size:12.5px; color:var(--text-secondary); background:var(--plane);
+  border-radius:10px; padding:8px 10px; margin-top:6px; line-height:1.5;
+}
+.set-row{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:9px; font-size:13.5px}
+.set-row input, .set-row select{margin:0; width:auto; flex:1; max-width:60%; font-size:13.5px; padding:8px 10px}
+.spin{display:inline-block; animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media print{ nav, .icon-btn, .btn, .sheet{display:none} }
+
+/* ── Catatan Sunyi ─────────────────────────────────────────────
+   Sengaja TIADA streak, TIADA sasaran, TIADA lencana.
+   Kaunter dibuat kecil dan senyap — kalau nombor itu dibesarkan,
+   ia jadi sasaran, dan kebaikan jadi pertandingan dengan diri sendiri. */
+.jb-hero{padding:22px 2px 6px}
+.jb-hero h2{font-size:22px;line-height:1.25;margin:0 0 8px}
+.jb-hero p{color:var(--text-secondary);font-size:14.5px;line-height:1.55;margin:0}
+#jbInput{width:100%;font:inherit;font-size:16px;line-height:1.5;padding:13px 14px;
+  border:1px solid var(--border);border-radius:12px;background:var(--plane);color:var(--text-primary);resize:vertical}
+.jb-row{display:flex;gap:9px;margin-top:11px}
+.jb-row .btn{flex:1}
+.jb-kira{display:flex;align-items:baseline;gap:8px;margin:26px 2px 10px}
+.jb-kira b{font-size:15px;font-weight:800}
+.jb-kira span{color:var(--text-secondary);font-size:13px}
+.jb-item{background:var(--surface-1);border:1px solid var(--border);border-radius:14px;
+  padding:14px 15px;margin-bottom:10px}
+.jb-item .t{font-size:15.5px;line-height:1.5}
+.jb-tag{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.jb-tag i{font-style:normal;font-size:11px;font-weight:700;letter-spacing:.03em;
+  background:var(--plane);border:1px solid var(--border);color:var(--text-secondary);padding:4px 9px;border-radius:99px}
+.jb-pant{margin-top:10px;padding-left:11px;border-left:3px solid var(--brand);
+  color:var(--text-secondary);font-size:13.5px;line-height:1.55;font-style:italic}
+.jb-del{background:none;border:0;color:var(--text-secondary);font-size:17px;cursor:pointer;padding:0 2px;line-height:1}
+.jb-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.jb-bar{display:grid;gap:7px;margin:12px 0 4px}
+.jb-bar .r{display:grid;grid-template-columns:96px 1fr 26px;align-items:center;gap:9px;font-size:12.5px}
+.jb-bar .r span{color:var(--text-secondary)}
+.jb-bar .r u{text-decoration:none;height:10px;border-radius:99px;background:var(--seq-400);display:block;min-width:5px}
+.jb-bar .r b{text-align:right;color:var(--text-secondary);font-weight:700;font-size:12px}
+
+/* ── Jalur pasang ke skrin utama ────────────────────────────
+   Pelayar dalam Facebook/Instagram TIDAK menyokong pemasangan PWA langsung —
+   peristiwa beforeinstallprompt memang tidak pernah berlaku di sana.
+   Jadi di dalam pelayar tersebut kita tidak menunjukkan butang palsu;
+   kita beritahu orang cara keluar ke Chrome dahulu. */
+.pasang{position:relative;margin:12px 0 0;padding:14px 40px 14px 16px;border-radius:14px;
+  background:linear-gradient(135deg,rgba(168,121,15,.13),rgba(42,120,214,.10));
+  border:1px solid rgba(168,121,15,.32)}
+.pasang-t{font-size:14.5px;line-height:1.55;color:var(--text-primary)}
+.pasang-b{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+.pasang-b button{font:inherit;font-size:13.5px;font-weight:700;padding:9px 15px;border-radius:99px;
+  border:1px solid var(--border);background:var(--surface-1);color:var(--text-primary);cursor:pointer}
+.pasang-b button.utama{background:var(--brand);border-color:var(--brand);color:#fff}
+.pasang-x{position:absolute;top:9px;right:10px;background:none;border:0;
+  color:var(--text-secondary);font-size:16px;cursor:pointer;line-height:1}
+
+/* ── Refleksi mingguan ── */
+.jbm-tajuk{font-size:20px;font-weight:800;line-height:1.3;margin:6px 0 12px}
+.jbm-buka{font-size:15.5px;line-height:1.68;color:var(--text-primary);margin:0 0 16px}
+.jbm-sor{border-left:3px solid var(--brand);padding:2px 0 2px 13px;margin:0 0 14px}
+.jbm-sor .a{font-size:14px;color:var(--text-secondary);margin-bottom:5px}
+.jbm-sor .k{font-size:15px;line-height:1.6;color:var(--text-primary)}
+.jbm-corak{font-size:14.5px;line-height:1.65;color:var(--text-secondary);margin:0 0 14px}
+.jbm-tutup{font-size:15.5px;line-height:1.68;margin:0 0 8px}
+.jbm-kaki{font-size:11.5px;color:var(--muted);margin:16px 0 0}
+
+@media print{
+  body.cetak-sunyi *{visibility:hidden!important}
+  body.cetak-sunyi #jbCetak, body.cetak-sunyi #jbCetak *{visibility:visible!important}
+  body.cetak-sunyi #jbCetak{position:absolute;left:0;top:0;width:100%;padding:12mm 10mm}
+  body.cetak-sunyi .jbm-tajuk{font-size:22pt}
+  body.cetak-sunyi .jbm-buka,body.cetak-sunyi .jbm-tutup{font-size:12pt}
+  body.cetak-sunyi .jbm-sor .k{font-size:11.5pt}
+}
+.sh-hari{padding:12px 0;border-bottom:1px solid var(--border)}
+.sh-hari:last-child{border-bottom:0}
+.sh-tarikh{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--text-secondary);margin-bottom:8px}
+.sh-baris{padding:7px 0}
+.sh-baris .t{display:block;font-size:14.5px;line-height:1.5;color:var(--text-primary)}
+.sh-baris .k{display:block;font-size:11.5px;color:var(--muted);margin-top:3px}
+.jb-idea{margin-top:14px;border-top:1px solid var(--border);padding-top:12px}
+.jb-idea summary{cursor:pointer;font-size:13.5px;font-weight:700;color:var(--brand);list-style:none}
+.jb-idea summary::-webkit-details-marker{display:none}
+.jb-idea summary::before{content:"＋ ";font-weight:800}
+.jb-idea[open] summary::before{content:"− "}
+.jb-chip{display:flex;flex-wrap:wrap;gap:7px}
+.jb-chip button{font:inherit;font-size:13px;line-height:1.3;padding:8px 13px;border-radius:99px;
+  border:1px solid var(--border);background:var(--plane);color:var(--text-secondary);
+  cursor:pointer;text-align:left}
+.jb-chip button:hover{border-color:var(--brand);color:var(--text-primary)}
+.jb-kepada{margin:14px 0 4px}
+.jb-kepada .k{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--text-secondary);margin-bottom:7px}
+.jb-guna{margin-top:14px;padding:15px 16px;border-radius:13px;
+  background:linear-gradient(135deg,rgba(27,175,122,.13),rgba(42,120,214,.11));
+  border:1px solid rgba(27,175,122,.28);
+  font-size:15.5px;line-height:1.6;color:var(--text-primary)}
+.jb-kosong{color:var(--text-secondary);font-size:14px;line-height:1.6;padding:16px 2px}
+.tagline{font-size:11.5px;color:var(--muted);letter-spacing:0;text-transform:none;font-weight:400;margin-top:2px;line-height:1.25;white-space:nowrap}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="dyno" style="width:40px;height:40px" id="brandMark"></div>
+  <div>
+    <div class="brand">Bob Dyno <span>NADI</span></div>
+    <div class="tagline">Masih bergerak walaupun perlahan</div>
+    <div class="date" id="todayLabel"></div>
+  </div>
+  <div class="spacer"></div>
+  <button class="icon-btn" id="themeBtn" title="Tukar tema" aria-label="Tukar tema">◐</button>
+</header>
+
+
+<div class="pasang" id="pasangBar" hidden>
+  <div class="pasang-t" id="pasangT"></div>
+  <div class="pasang-b" id="pasangB"></div>
+  <button class="pasang-x" id="pasangX" aria-label="Tutup">✕</button>
+</div>
+
+<main>
+
+<!-- ══════════ HARI INI ══════════ -->
+<section class="view" id="v-today">
+
+  <div class="card">
+    <div class="hero">
+      <div class="flame" id="flame">🔥</div>
+      <div class="hero-num" id="streakNum">0</div>
+      <div class="hero-lbl"><b>hari berturut</b>current streak</div>
+    </div>
+    <div id="todayPill"></div>
+    <div id="greet" style="font-size:13px;color:var(--text-secondary);margin-top:10px"></div>
+    <div class="streak-meta">
+      <div class="meta-item">Rekod terbaik<b id="bestStreak">0</b></div>
+      <div class="meta-item">Aktiviti hari ini<b id="todayCount">0</b></div>
+      <div class="meta-item">Jumlah semua<b id="allCount">0</b></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Rekod aktiviti <span class="sub">— apa yang saya buat</span></h2>
+    <div class="set-row" style="margin-bottom:10px">
+      <span>Tarikh</span>
+      <input type="date" id="fDate" style="max-width:58%">
+    </div>
+    <div id="dateBanner"></div>
+    <div class="chips" id="catChips"></div>
+    <input type="text" id="fTitle" placeholder="Contoh: Belajar connect Claude dengan HeyGen" autocomplete="off">
+    <textarea id="fNote" rows="2" placeholder="Nota / pelajaran (optional)"></textarea>
+    <button class="btn" id="addBtn">+ Simpan aktiviti</button>
+  </div>
+
+  <div class="card">
+    <h2>Aktiviti hari ini</h2>
+    <div id="todayList"></div>
+  </div>
+
+  <div class="card">
+    <h2>Refleksi malam <span class="sub">— daily reflection</span></h2>
+    <div class="row-between" style="margin-bottom:8px">
+      <span style="font-size:13px;color:var(--text-secondary)">Mood &amp; tenaga hari ni</span>
+      <div class="seg-ctl" id="moodCtl"></div>
+    </div>
+    <textarea id="fLesson" rows="2" placeholder="Pelajaran terbesar hari ni…"></textarea>
+    <textarea id="fImprove" rows="2" placeholder="Esok saya nak perbaiki…"></textarea>
+    <button class="btn ghost" id="saveRef">Simpan refleksi</button>
+  </div>
+
+  <div class="card" id="repCard">
+    <h2>Report malam <span class="sub">— coach Bob Dyno</span></h2>
+    <div id="repPreview"></div>
+    <button class="btn" id="genBtn" style="margin-top:10px">✨ Jana report malam ini</button>
+    <div class="note" id="repHint"></div>
+  </div>
+
+</section>
+
+<!-- ══════════ PROGRESS ══════════ -->
+<section class="view" id="v-progress">
+
+  <div class="card">
+    <div class="row-between">
+      <h2 style="margin:0">Aktiviti 7 hari lepas</h2>
+    </div>
+    <div id="chartWeek"></div>
+    <div class="note">Bar = jumlah aktiviti direkod hari tersebut. Nombor dilabel terus atas bar.</div>
+  </div>
+
+  <div class="card">
+    <div class="row-between">
+      <h2 style="margin:0">Imbangan kategori</h2>
+      <div class="seg-ctl" id="rangeCtl">
+        <button data-r="7" aria-pressed="true">7 hari</button>
+        <button data-r="30" aria-pressed="false">30 hari</button>
+        <button data-r="0" aria-pressed="false">Semua</button>
+      </div>
+    </div>
+    <div id="chartCats"></div>
+    <details>
+      <summary>Lihat sebagai jadual (table view)</summary>
+      <table id="catTable"></table>
+    </details>
+    <div class="note" id="balanceNote"></div>
+  </div>
+
+  <div class="card">
+    <h2>Sasaran mingguan <span class="sub">— weekly target</span></h2>
+    <div id="targets"></div>
+    <details>
+      <summary>Ubah sasaran mingguan</summary>
+      <div id="targetEdit" style="padding-top:6px"></div>
+    </details>
+  </div>
+
+  <div class="card">
+    <h2>Konsistensi 12 minggu <span class="sub">— consistency heatmap</span></h2>
+    <div id="chartHeat"></div>
+  </div>
+
+  <div class="card">
+    <h2>Kes rumit? <span class="sub">— bawa ke AI sendiri</span></h2>
+    <p class="note" style="margin-top:0">Report harian ditulis oleh model murah supaya kos kekal rendah.
+      Bila ada corak degil yang perlu digali lebih dalam, ambil pakej 14 hari ni dan tampal dalam
+      ChatGPT / Claude / Gemini kamu sendiri.</p>
+    <button class="btn ghost" onclick="openDeep()">🧠 Sediakan pakej analisa mendalam</button>
+  </div>
+
+</section>
+
+<!-- ══════════ REKOD / DATA ══════════ -->
+
+<section class="view active" id="v-baik">
+  <div class="jb-hero">
+    <h2>Apa kebaikan yang kamu lakukan hari ini?</h2>
+    <p>Tak perlu siapa-siapa tahu. Ini antara kamu dan perjalanan hidup kamu.</p>
+  </div>
+
+  <div class="card">
+    <textarea id="jbInput" rows="3" placeholder="Contoh: Saya alihkan dahan yang menghalang jalan."></textarea>
+    <div class="jb-row">
+      <button class="btn" id="jbSave">Catat kebaikan ni</button>
+    </div>
+    <p class="note" id="jbNote">Tulis biasa-biasa sahaja. Tak perlu ayat cantik.</p>
+    <details class="jb-idea">
+      <summary>Tak tahu nak tulis apa?</summary>
+      <p class="note" style="margin:10px 0 9px">Kebaikan tak semestinya melibatkan wang.
+        Tekan mana-mana untuk mula.</p>
+      <div class="jb-chip" id="jbIdea"></div>
+    </details>
+  </div>
+
+  <div id="jbHariIni"></div>
+  <div id="jbMinggu"></div>
+  <div id="jbCorak"></div>
+  <div id="jbSejarah"></div>
+</section>
+
+<section class="view" id="v-data">
+  <div class="card">
+    <h2>Sejarah rekod <span class="sub">— history</span></h2>
+    <div id="history"></div>
+  </div>
+
+  <div class="card">
+    <h2>Sejarah Catatan Sunyi <span class="sub">— kebaikan yang direkod</span></h2>
+    <div id="sunyiHist"></div>
+  </div>
+
+  <div class="card">
+    <h2>Tetapan Bob Dyno (AI Coach)</h2>
+    <div class="set-row">
+      <span>Nama panggilan</span>
+      <input type="text" id="setName" placeholder="cth: Borhan" autocomplete="off">
+    </div>
+    <div class="set-row">
+      <span>Jam report malam</span>
+      <select id="setHour"></select>
+    </div>
+    <div class="set-row">
+      <span>Auto buka report</span>
+      <select id="setAuto">
+        <option value="1">Ya — bila buka app selepas jam tu</option>
+        <option value="0">Tidak — butang sahaja</option>
+      </select>
+    </div>
+    <div class="set-row">
+      <span>Peringatan (notifikasi)</span>
+      <button class="btn ghost" id="notifBtn" style="width:auto;padding:8px 12px;font-size:13px">Aktifkan</button>
+    </div>
+    <div class="note" id="notifNote">Bob Dyno akan tegur kalau kamu senyap beberapa hari — makin lama senyap, makin terus terang teguran.</div>
+    <hr style="border:0;border-top:1px solid var(--grid);margin:14px 0">
+    <div class="set-row">
+      <span>Status AI</span>
+      <button class="btn ghost" id="pingBtn" style="width:auto;padding:8px 12px;font-size:13px">Uji sekarang</button>
+    </div>
+    <div class="note" id="srvStatus">Saranan ditulis oleh model OpenAI Luna melalui server Bob Dyno — pengguna tak perlu apa-apa key.</div>
+    <details style="margin-top:6px">
+      <summary>Lanjutan — guna API key sendiri</summary>
+      <p class="note">
+        Hanya kalau server penuh atau kamu nak guna akaun OpenAI sendiri. Key disimpan dalam
+        peranti ini sahaja dan dihantar terus ke OpenAI.
+      </p>
+      <div class="set-row">
+        <span>OpenAI API key</span>
+        <input type="password" id="setKey" placeholder="sk-..." autocomplete="off">
+      </div>
+      <div class="set-row">
+        <span>Model</span>
+        <select id="setModel"><option value="">(auto)</option></select>
+      </div>
+      <div class="btn-row">
+        <button class="btn ghost" id="saveKey">Simpan key</button>
+        <button class="btn ghost" id="testKey">Uji key</button>
+      </div>
+      <div class="note" id="keyStatus"></div>
+    </details>
+  </div>
+
+  <div class="card">
+    <h2>Apa yang Bob Dyno ingat <span class="sub">— memori</span></h2>
+    <div id="memBox"></div>
+  </div>
+
+  <div class="card">
+    <h2>Backup data</h2>
+    <p class="note" style="margin-top:0">Semua data disimpan dalam telefon <span class="uname"></span> sendiri (offline). Buat backup sekali seminggu supaya selamat.</p>
+    <div class="btn-row" style="margin-bottom:8px">
+      <button class="btn ghost" id="exportBtn">⬇ Export JSON</button>
+      <button class="btn ghost" id="importBtn">⬆ Import JSON</button>
+    </div>
+    <input type="file" id="fileIn" accept="application/json" style="display:none">
+    <button class="btn danger" id="resetBtn">Padam semua data</button>
+  </div>
+
+  <div class="card">
+    <h2>Tentang</h2>
+    <p class="note" style="margin-top:0">
+      <b>Bob Dyno — NADI</b><br>Catatan kebaikan, coach, dan log pembangunan diri harian. <i>Masih bergerak walaupun perlahan.</i><br><br> Prinsipnya mudah: setiap hari catat
+      <i>satu benda</i> yang buat <span class="uname"></span> lebih baik dari semalam. Streak jaga konsistensi,
+      chart tunjuk kategori mana yang terabai.<br><br>
+      Data 100% offline di peranti ini. Tiada akaun.<br><br>
+      <a href="quiz.html" style="color:var(--s1)">Buat quiz "Kembali Bangun"</a> —
+      untuk kawan yang sedang cuba bangun semula.<br><br>
+      <b>Versi app:</b> <span id="appVer">2026.08.29k</span> · <a href="notis-privasi.html" target="_blank">Notis privasi</a> ·
+      <a href="#" id="forceUpd" style="color:var(--s1)">Paksa kemas kini</a>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<nav>
+  <button data-v="baik" aria-pressed="true"><span class="ic">🌱</span>Catatan Sunyi</button>
+  <button data-v="today" aria-pressed="false"><span class="ic">☀️</span>Hari Ini</button>
+  <button data-v="progress" aria-pressed="false"><span class="ic">📈</span>Progress</button>
+  <button data-v="data" aria-pressed="false"><span class="ic">🗂️</span>Rekod</button>
+</nav>
+
+<div class="sheet" id="sheet" aria-modal="true" role="dialog">
+  <div class="sheet-box" id="sheetBox"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="tip" id="tip"></div>
+
+<script>
+/* Kiraan penggunaan — hantar nama peristiwa sahaja.
+   Tiada IP, tiada id, tiada teks. Gagal senyap; ia tak boleh
+   menghalang apa-apa yang pengguna sedang buat. */
+function kira(e){
+  try{ fetch('/api/kira',{method:'POST',headers:{'content-type':'application/json'},
+    body:JSON.stringify({e}),keepalive:true}).catch(()=>{}); }catch(_){}
+}
+
+/* Id peranti rawak, disimpan dalam telefon sahaja.
+   Ia BUKAN pengenalan diri — tiada nama, tiada emel, tiada kaitan dengan sesiapa.
+   Tujuannya satu: supaya had penggunaan dikira per telefon, bukan per alamat IP,
+   kerana pengguna mudah alih Malaysia berkongsi IP melalui CGNAT pembawa. */
+function peranti(){
+  try{
+    let d=localStorage.getItem('bob.peranti');
+    if(!d){ d=Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2);
+            localStorage.setItem('bob.peranti',d); }
+    return d;
+  }catch(e){ return ''; }
+}
+
+/* ─────────────  DATA MODEL  ───────────── */
+const CATS = [
+  {id:'ilmu',   label:'Ilmu Baru',    en:'Learning',    icon:'📚', color:'var(--s1)', slot:1},
+  {id:'skill',  label:'Kemahiran',    en:'Hands-on',    icon:'🛠️', color:'var(--s2)', slot:2},
+  {id:'kelrg',  label:'Keluarga',     en:'Family',      icon:'👨‍👧', color:'var(--s3)', slot:3},
+  {id:'sosial', label:'Impak Sosial', en:'Impact',      icon:'🤝', color:'var(--s4)', slot:4},
+  {id:'rohani', label:'Rohani',       en:'Spiritual',   icon:'🕌', color:'var(--s5)', slot:5},
+  {id:'sihat',  label:'Kesihatan',    en:'Health',      icon:'💪', color:'var(--s6)', slot:6},
+];
+const CAT = Object.fromEntries(CATS.map(c=>[c.id,c]));
+/* Ayat sauh app ni — teks disahkan dari quran.com (terjemahan Basmeih) */
+const AYAT_SAUH = {
+  ar:'إِنَّ ٱللَّهَ لَا يُغَيِّرُ مَا بِقَوْمٍ حَتَّىٰ يُغَيِّرُوا۟ مَا بِأَنفُسِهِمْ',
+  ms:'Sesungguhnya Allah tidak mengubah apa yang ada pada sesuatu kaum sehingga mereka mengubah apa yang ada pada diri mereka sendiri.',
+  ref:'Ar-Ra‘d 13:11'
+};
+
+const KEY = 'naikdiri.v1';
+const DEF_TARGET = {ilmu:3, skill:2, kelrg:4, sosial:2, rohani:5, sihat:3};
+
+/* Rekod contoh — hanya dimasukkan kalau pengguna pilih semasa mula */
+const SEED = [
+  {cat:'ilmu',   title:'Belajar connect Claude dengan HeyGen',
+   note:'Setup MCP HeyGen — sekarang boleh generate video terus dari Claude.'},
+  {cat:'skill',  title:'Belajar cara repair caps rosak + praktik pada 2 caps',
+   note:'Teori terus praktik hari yang sama. 2 caps dah elok balik.'},
+  {cat:'kelrg',  title:'Bonding dengan anak — panggil "kanda dinda"',
+   note:'Panggilan manja buat hubungan lagi rapat.'},
+  {cat:'sosial', title:'Posting menyatukan penentang Abam Peah',
+   note:'Cuba turunkan tensi, ajak fokus pada penyelesaian.'},
+  {cat:'sosial', title:'Cadangan penambahbaikan SBJ untuk Abam Peah',
+   note:'Bukan sekadar kritik — bagi jalan penambahbaikan yang konkrit.'},
+];
+
+let db = load();
+function load(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw) { const d = JSON.parse(raw); d.entries??=[]; d.refl??={}; d.baik??=[]; d.targets??={...DEF_TARGET}; return d; }
+  }catch(e){}
+  return {entries:[], refl:{}, baik:[], targets:{...DEF_TARGET}, reports:{}, settings:{}, created:today()};
+}
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(db)); }catch(e){ toast('Gagal simpan — storage penuh'); }
+  try{ mirrorState(); }catch(e){}
+}
+
+/* Cermin keadaan ke IndexedDB supaya service worker boleh membacanya
+   walaupun app ditutup. localStorage tidak boleh dicapai dari SW. */
+function idb(){
+  return new Promise((res, rej)=>{
+    const r = indexedDB.open('bobdyno', 1);
+    r.onupgradeneeded = ()=> r.result.createObjectStore('kv');
+    r.onsuccess = ()=> res(r.result);
+    r.onerror = ()=> rej(r.error);
+  });
+}
+async function mirrorState(){
+  const days = [...new Set(db.entries.map(e=>e.date))].sort();
+  const state = {
+    lastEntry: days[days.length-1] || null,
+    nama: (db.settings.name||'').trim(),
+    hour: db.settings.hour ?? 21,
+    streak: streak(),
+    janjiTerbuka: (db.memory?.janji||[]).filter(j=>j.status==='terbuka').slice(-1).map(j=>j.teks)[0] || null,
+    ayat: AYAT_SAUH
+  };
+  const d = await idb();
+  await new Promise((res,rej)=>{
+    const tx = d.transaction('kv','readwrite');
+    tx.objectStore('kv').put(state,'state');
+    tx.oncomplete = res; tx.onerror = ()=>rej(tx.error);
+  });
+}
+save(); // pastikan state awal (termasuk seed) terus disimpan
+
+/* ─────────────  DATE HELPERS  ───────────── */
+function ymd(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function today(){ return ymd(new Date()); }
+function shift(dateStr, n){ const d = new Date(dateStr+'T12:00:00'); d.setDate(d.getDate()+n); return ymd(d); }
+const DAY_MS = 864e5;
+const HARI = ['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
+const HARI_S = ['A','I','S','R','K','J','S'];
+const BULAN = ['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogo','Sep','Okt','Nov','Dis'];
+function pretty(dateStr){
+  const d = new Date(dateStr+'T12:00:00');
+  return HARI[d.getDay()]+', '+d.getDate()+' '+BULAN[d.getMonth()]+' '+d.getFullYear();
+}
+function relLabel(dateStr){
+  if(dateStr===today()) return 'Hari ini';
+  if(dateStr===shift(today(),-1)) return 'Semalam';
+  return pretty(dateStr);
+}
+
+/* ─────────────  DERIVED  ───────────── */
+function activeDays(){ return new Set(db.entries.map(e=>e.date)); }
+function streak(){
+  const days = activeDays();
+  let cur = today();
+  if(!days.has(cur)) cur = shift(cur,-1);
+  if(!days.has(cur)) return 0;
+  let n = 0;
+  while(days.has(cur)){ n++; cur = shift(cur,-1); }
+  return n;
+}
+function bestStreak(){
+  const days = [...activeDays()].sort();
+  let best=0, run=0, prev=null;
+  for(const d of days){
+    run = (prev && d===shift(prev,1)) ? run+1 : 1;
+    best = Math.max(best, run); prev = d;
+  }
+  return best;
+}
+function entriesIn(days){
+  if(!days) return db.entries;
+  const from = shift(today(), -(days-1));
+  return db.entries.filter(e=> e.date >= from);
+}
+function countByCat(list){
+  const m = Object.fromEntries(CATS.map(c=>[c.id,0]));
+  list.forEach(e=>{ if(m[e.cat]!==undefined) m[e.cat]++; });
+  return m;
+}
+function weekStartMonday(){
+  const d = new Date(); const dow = (d.getDay()+6)%7;
+  return shift(today(), -dow);
+}
+
+/* ─────────────  UI: CHIPS / FORM  ───────────── */
+let picked = 'ilmu';
+const chipWrap = document.getElementById('catChips');
+CATS.forEach(c=>{
+  const b = document.createElement('button');
+  b.className='chip'; b.style.setProperty('--c', c.color);
+  b.setAttribute('aria-pressed', c.id===picked);
+  b.innerHTML = `<span class="dot"></span>${c.icon} ${c.label}`;
+  b.onclick = ()=>{ picked=c.id; [...chipWrap.children].forEach((x,i)=>x.setAttribute('aria-pressed', CATS[i].id===picked)); };
+  chipWrap.appendChild(b);
+});
+
+/* Tarikh rekod — boleh isi hari yang terlepas */
+const fDate = document.getElementById('fDate');
+fDate.max = today();
+fDate.min = shift(today(), -365);
+fDate.value = today();
+function pickedDate(){ return fDate.value || today(); }
+function syncDateBanner(){
+  const d = pickedDate();
+  const box = document.getElementById('dateBanner');
+  if(d === today()){ box.innerHTML = ''; return; }
+  const n = Math.round((new Date(today()+'T12:00:00') - new Date(d+'T12:00:00'))/DAY_MS);
+  box.innerHTML = `<div class="date-warn">Merekod untuk <b>${pretty(d)}</b> (${n} hari lepas).
+    Streak dikira semula automatik.<br><button id="dateReset">↩ Kembali ke hari ini</button></div>`;
+  document.getElementById('dateReset').onclick = ()=>{ fDate.value = today(); syncDateBanner(); renderToday(); };
+}
+fDate.onchange = ()=>{ syncDateBanner(); renderToday(); };
+
+document.getElementById('addBtn').onclick = ()=>{
+  const t = document.getElementById('fTitle').value.trim();
+  if(!t){ toast(`Tulis apa yang ${U()} buat dulu`); document.getElementById('fTitle').focus(); return; }
+  const d = pickedDate();
+  db.entries.push({id:Date.now()+''+Math.round(performance.now()), date:d, cat:picked,
+                   title:t, note:document.getElementById('fNote').value.trim()});
+  markStale(d);
+  save();
+  document.getElementById('fTitle').value=''; document.getElementById('fNote').value='';
+  toast(d===today() ? '✓ Direkod. Teruskan!' : `✓ Direkod untuk ${relLabel(d)}`);
+  renderAll();
+};
+
+/* mood control */
+const MOODS = ['😞','😐','🙂','😃','🤩'];
+const moodCtl = document.getElementById('moodCtl');
+MOODS.forEach((m,i)=>{
+  const b=document.createElement('button'); b.textContent=m; b.dataset.m=i+1;
+  b.onclick=()=>{ const r = db.refl[today()] ||= {}; r.mood=i+1; save(); syncMood(); };
+  moodCtl.appendChild(b);
+});
+function syncMood(){
+  const v = db.refl[today()]?.mood;
+  [...moodCtl.children].forEach(b=> b.setAttribute('aria-pressed', +b.dataset.m===v));
+}
+document.getElementById('saveRef').onclick = ()=>{
+  const r = db.refl[today()] ||= {};
+  r.lesson = document.getElementById('fLesson').value.trim();
+  r.improve = document.getElementById('fImprove').value.trim();
+  save(); toast('✓ Refleksi disimpan');
+};
+
+/* ─────────────  RENDER: TODAY  ───────────── */
+function renderToday(){
+  document.getElementById('todayLabel').textContent = pretty(today());
+  const g = document.getElementById('greet');
+  if(g){
+    const h = new Date().getHours();
+    const sapa = h<12?'Selamat pagi':h<15?'Selamat tengah hari':h<19?'Selamat petang':'Selamat malam';
+    g.textContent = `${sapa}, ${U()}. ${db.entries.filter(e=>e.date===today()).length? 'Teruskan.' : 'Apa satu benda yang buat hari ni tak sia-sia?'}`;
+    g.style.opacity = 1;
+  }
+  const s = streak();
+  document.getElementById('streakNum').textContent = s;
+  document.getElementById('flame').textContent = s===0?'🌱': s<3?'🔥': s<7?'🔥🔥':'🔥🔥🔥';
+  document.getElementById('bestStreak').textContent = bestStreak();
+  const viewDate = (typeof pickedDate === 'function') ? pickedDate() : today();
+  const tList = db.entries.filter(e=>e.date===viewDate);
+  const todayList = db.entries.filter(e=>e.date===today());
+  document.getElementById('todayCount').textContent = todayList.length;
+  document.getElementById('allCount').textContent = db.entries.length;
+
+  document.getElementById('todayPill').innerHTML = todayList.length
+    ? `<div class="today-pill pill-done">✓ Hari ini sudah direkod — streak selamat</div>`
+    : `<div class="today-pill pill-todo">⏳ Belum rekod apa-apa hari ini</div>`;
+
+  const hdr = document.querySelector('#v-today .card:nth-of-type(3) h2');
+  if(hdr) hdr.innerHTML = viewDate===today() ? 'Aktiviti hari ini'
+        : `Aktiviti ${relLabel(viewDate)} <span class="sub">— hari lepas</span>`;
+  const box = document.getElementById('todayList');
+  box.innerHTML = tList.length ? '' : `<div class="empty">Belum ada rekod untuk tarikh ni. Satu perkara kecil pun dikira. 🌱</div>
+    <div class="ayat-sauh">
+      <div class="ms">${AYAT_SAUH.ms}</div>
+      <div class="ref">— ${AYAT_SAUH.ref}</div>
+    </div>`;
+  tList.slice().reverse().forEach(e=> box.appendChild(entryEl(e)));
+
+  const r = db.refl[today()] || {};
+  document.getElementById('fLesson').value = r.lesson||'';
+  document.getElementById('fImprove').value = r.improve||'';
+  syncMood();
+}
+function entryEl(e){
+  const c = CAT[e.cat] || CATS[0];
+  const d = document.createElement('div');
+  d.className='entry'; d.style.setProperty('--c', c.color);
+  const noNote = !(e.note||'').trim();
+  d.innerHTML = `<div class="bar"></div><div class="body">
+      <div class="t"></div><div class="m">${c.icon} ${c.label}</div>
+      ${noNote ? '<button class="add-note">＋ Tambah nota</button>' : '<div class="n"></div>'}</div>
+      <button class="del" title="Padam">✕</button>`;
+  d.querySelector('.t').textContent = e.title;
+  if(!noNote) d.querySelector('.n').textContent = e.note;
+  d.querySelector('.body').onclick = ev=>{ if(!ev.target.closest('.del')) editEntry(e.id); };
+  d.querySelector('.del').onclick = ()=>{
+    if(!confirm('Padam rekod ini?')) return;
+    markStale(e.date);
+    db.entries = db.entries.filter(x=>x.id!==e.id); save(); renderAll(); toast('Rekod dipadam');
+  };
+  return d;
+}
+
+/* Report untuk tarikh ni jadi lapuk bila rekodnya diubah */
+function markStale(date){
+  const r = db.reports?.[date];
+  if(r){ r.stale = true; save(); }
+}
+
+/* Edit rekod — tukar tajuk, kategori, dan yang paling penting: TAMBAH NOTA */
+function editEntry(id){
+  const e = db.entries.find(x=>x.id===id); if(!e) return;
+  openSheet(`
+    <div class="sheet-head"><div><h3>Edit rekod</h3>
+      <div class="d">${relLabel(e.date)}</div></div>
+      <button class="sheet-x" id="sheetX">✕</button></div>
+    <div class="chips" id="edChips" style="margin-top:12px"></div>
+    <label class="fl">Apa yang dibuat</label>
+    <input type="text" id="edTitle" value="">
+    <label class="fl">Nota — apa yang berlaku &amp; apa yang dipelajari</label>
+    <textarea id="edNote" rows="5" placeholder="Contoh: Yang paling susah bahagian X. Cara yang berkesan ialah Y. Kali seterusnya saya nak cuba Z."></textarea>
+    <div class="note" style="margin:-2px 0 10px">Nota inilah yang Bob Dyno baca untuk menilai kedalaman. Tanpa nota, ia cuma nampak tajuk.</div>
+    <button class="btn" id="edSave">Simpan</button>
+    <button class="btn ghost" id="edDel" style="margin-top:8px;color:var(--critical)">Padam rekod ini</button>`);
+  document.getElementById('edTitle').value = e.title;
+  document.getElementById('edNote').value = e.note||'';
+  let pk = e.cat;
+  const w = document.getElementById('edChips');
+  CATS.forEach(c=>{
+    const b=document.createElement('button');
+    b.className='chip'; b.style.setProperty('--c',c.color);
+    b.setAttribute('aria-pressed', c.id===pk);
+    b.innerHTML = `<span class="dot"></span>${c.icon} ${c.label}`;
+    b.onclick = ()=>{ pk=c.id; [...w.children].forEach((x,i)=>x.setAttribute('aria-pressed', CATS[i].id===pk)); };
+    w.appendChild(b);
+  });
+  setTimeout(()=>{ const n=document.getElementById('edNote'); if(!e.note) n.focus(); }, 280);
+  document.getElementById('edSave').onclick = ()=>{
+    e.title = document.getElementById('edTitle').value.trim() || e.title;
+    e.note  = document.getElementById('edNote').value.trim();
+    e.cat   = pk;
+    markStale(e.date);
+    save(); sheet.classList.remove('show'); renderAll();
+    toast(db.reports?.[e.date] ? '✓ Dikemas kini — jana semula report' : '✓ Rekod dikemas kini');
+  };
+  document.getElementById('edDel').onclick = ()=>{
+    if(!confirm('Padam rekod ini?')) return;
+    markStale(e.date);
+    db.entries = db.entries.filter(x=>x.id!==id); save();
+    sheet.classList.remove('show'); renderAll(); toast('Rekod dipadam');
+  };
+}
+
+/* ─────────────  CHARTS  ───────────── */
+const tip = document.getElementById('tip');
+function bindTip(el, text){
+  const show = ev=>{ tip.textContent=text; tip.classList.add('show');
+    const x = ev.touches? ev.touches[0].clientX : ev.clientX;
+    const y = ev.touches? ev.touches[0].clientY : ev.clientY;
+    tip.style.left = Math.min(Math.max(8,x-tip.offsetWidth/2), innerWidth-tip.offsetWidth-8)+'px';
+    tip.style.top = Math.max(8, y-38)+'px';
+  };
+  el.addEventListener('pointerenter', show);
+  el.addEventListener('pointermove', show);
+  el.addEventListener('pointerdown', show);
+  el.addEventListener('pointerleave', ()=> tip.classList.remove('show'));
+  el.addEventListener('pointerup', ()=> setTimeout(()=>tip.classList.remove('show'),1400));
+}
+const NS='http://www.w3.org/2000/svg';
+function svgEl(tag, attrs){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); return e; }
+function roundTop(x,y,w,h,r){
+  r = Math.min(r, w/2, h);
+  return `M${x},${y+h} L${x},${y+r} Q${x},${y} ${x+r},${y} L${x+w-r},${y} Q${x+w},${y} ${x+w},${y+r} L${x+w},${y+h} Z`;
+}
+function roundRight(x,y,w,h,r){
+  r = Math.min(r, w, h/2);
+  return `M${x},${y} L${x+w-r},${y} Q${x+w},${y} ${x+w},${y+r} L${x+w},${y+h-r} Q${x+w},${y+h} ${x+w-r},${y+h} L${x},${y+h} Z`;
+}
+
+/* 7-day bar chart — single series, sequential blue, direct labels */
+function chartWeek(){
+  const W=340, H=170, padL=6, padR=6, padB=26, padT=22;
+  const days=[]; for(let i=6;i>=0;i--) days.push(shift(today(),-i));
+  const vals = days.map(d=> db.entries.filter(e=>e.date===d).length);
+  const max = Math.max(3, ...vals);
+  const plotH = H-padB-padT, plotW = W-padL-padR;
+  const slot = plotW/7, bw = Math.min(30, slot-12);
+  const svg = svgEl('svg',{viewBox:`0 0 ${W} ${H}`, role:'img',
+    'aria-label':`Aktiviti 7 hari lepas, ${vals.join(', ')}`});
+
+  [0,.5,1].forEach(f=>{
+    const y = padT+plotH*(1-f);
+    svg.appendChild(svgEl('line',{x1:padL,x2:W-padR,y1:y,y2:y,stroke:'var(--grid)','stroke-width':1}));
+  });
+  days.forEach((d,i)=>{
+    const v = vals[i];
+    const x = padL + slot*i + (slot-bw)/2;
+    const h = v/max*plotH;
+    const y = padT+plotH-h;
+    const isToday = d===today();
+    if(v>0){
+      const p = svgEl('path',{d:roundTop(x,y,bw,Math.max(h,4),4),
+        fill: isToday? 'var(--seq-550)':'var(--seq-400)'});
+      svg.appendChild(p);
+      bindTip(p, `${relLabel(d)} — ${v} aktiviti`);
+      const lab = svgEl('text',{x:x+bw/2, y:y-6, 'text-anchor':'middle',
+        'font-size':11.5,'font-weight':650, fill:'var(--text-primary)','font-family':'var(--font)'});
+      lab.textContent = v; svg.appendChild(lab);
+    } else {
+      svg.appendChild(svgEl('path',{d:roundTop(x,padT+plotH-4,bw,4,2), fill:'var(--grid)'}));
+    }
+    const dd = new Date(d+'T12:00:00');
+    const t1 = svgEl('text',{x:x+bw/2, y:H-11,'text-anchor':'middle','font-size':11,
+      fill: isToday?'var(--text-primary)':'var(--muted)','font-weight':isToday?650:400,'font-family':'var(--font)'});
+    t1.textContent = HARI_S[dd.getDay()];
+    svg.appendChild(t1);
+    const t2 = svgEl('text',{x:x+bw/2, y:H-0.5,'text-anchor':'middle','font-size':9.5,
+      fill:'var(--muted)','font-family':'var(--font)'});
+    t2.textContent = dd.getDate(); svg.appendChild(t2);
+  });
+  svg.appendChild(svgEl('line',{x1:padL,x2:W-padR,y1:padT+plotH,y2:padT+plotH,stroke:'var(--axis)','stroke-width':1}));
+  const host = document.getElementById('chartWeek'); host.innerHTML=''; host.appendChild(svg);
+}
+
+/* Category balance — horizontal bars, direct labels (relief for low-contrast hues) */
+let range = 7;
+function chartCats(){
+  const list = entriesIn(range||0);
+  const counts = countByCat(list);
+  const max = Math.max(1, ...Object.values(counts));
+  const rowH = 30, W=340, labW=104, barW=W-labW-34;
+  const H = CATS.length*rowH;
+  const svg = svgEl('svg',{viewBox:`0 0 ${W} ${H}`, role:'img','aria-label':'Imbangan kategori'});
+  CATS.forEach((c,i)=>{
+    const y = i*rowH;
+    const v = counts[c.id];
+    const w = v/max*barW;
+    const lab = svgEl('text',{x:0,y:y+rowH/2+4,'font-size':12,fill:'var(--text-secondary)','font-family':'var(--font)'});
+    lab.textContent = c.label; svg.appendChild(lab);
+    svg.appendChild(svgEl('rect',{x:labW,y:y+7,width:barW,height:14,rx:4,fill:'var(--grid)'}));
+    if(v>0){
+      const p = svgEl('path',{d:roundRight(labW,y+7,Math.max(w,6),14,4), fill:c.color});
+      svg.appendChild(p); bindTip(p, `${c.label}: ${v} aktiviti`);
+    }
+    const num = svgEl('text',{x:labW+barW+8,y:y+rowH/2+4,'font-size':12.5,'font-weight':650,
+      fill: v>0?'var(--text-primary)':'var(--muted)','font-family':'var(--font)'});
+    num.textContent = v; svg.appendChild(num);
+  });
+  const host=document.getElementById('chartCats'); host.innerHTML=''; host.appendChild(svg);
+
+  // table view (accessibility relief)
+  const tot = Object.values(counts).reduce((a,b)=>a+b,0) || 1;
+  document.getElementById('catTable').innerHTML =
+    '<tr><th>Kategori</th><th class="num">Aktiviti</th><th class="num">%</th></tr>' +
+    CATS.map(c=>`<tr><td>${c.icon} ${c.label}</td><td class="num">${counts[c.id]}</td><td class="num">${Math.round(counts[c.id]/tot*100)}%</td></tr>`).join('');
+
+  // insight
+  const sorted = CATS.slice().sort((a,b)=>counts[a.id]-counts[b.id]);
+  const weak = sorted[0], strong = sorted[sorted.length-1];
+  document.getElementById('balanceNote').textContent = list.length
+    ? `Paling kuat: ${strong.label} (${counts[strong.id]}). Paling terabai: ${weak.label} (${counts[weak.id]}) — cuba isi satu aktiviti kategori ni minggu depan.`
+    : 'Belum ada data untuk tempoh ini.';
+}
+document.getElementById('rangeCtl').onclick = ev=>{
+  const b = ev.target.closest('button'); if(!b) return;
+  range = +b.dataset.r;
+  [...ev.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed', x===b));
+  chartCats();
+};
+
+/* Weekly targets */
+function renderTargets(){
+  const from = weekStartMonday();
+  const wk = db.entries.filter(e=>e.date>=from);
+  const counts = countByCat(wk);
+  document.getElementById('targets').innerHTML = CATS.map(c=>{
+    const t = db.targets[c.id] ?? 0, v = counts[c.id];
+    const pct = t? Math.min(100, v/t*100) : 0;
+    return `<div class="tgt" style="--c:${c.color}">
+      <div class="tgt-head"><b>${c.icon} ${c.label}</b><span class="v">${v} / ${t}${v>=t&&t>0?' ✓':''}</span></div>
+      <div class="track"><div class="fill" style="width:${pct}%"></div></div></div>`;
+  }).join('');
+  document.getElementById('targetEdit').innerHTML = CATS.map(c=>
+    `<div class="tgt-head" style="align-items:center;margin-bottom:6px">
+      <span>${c.icon} ${c.label}</span>
+      <input type="number" min="0" max="21" value="${db.targets[c.id]??0}" data-t="${c.id}"
+        style="width:70px;margin:0;padding:6px 8px;text-align:center">
+     </div>`).join('');
+  document.querySelectorAll('#targetEdit input').forEach(inp=>{
+    inp.onchange = ()=>{ db.targets[inp.dataset.t] = Math.max(0, +inp.value||0); save(); renderTargets(); };
+  });
+}
+
+/* Consistency heatmap — sequential blue */
+function chartHeat(){
+  const weeks=12, cell=13, gap=3.5, W=340;
+  const gridW = weeks*(cell+gap)-gap, offX = 22, offY = 14;
+  const H = offY + 7*(cell+gap);
+  const svg = svgEl('svg',{viewBox:`0 0 ${W} ${H}`, role:'img','aria-label':'Heatmap konsistensi 12 minggu'});
+  const dow = (new Date().getDay()+6)%7;
+  const start = shift(today(), -(dow + (weeks-1)*7));
+  const byDay = {}; db.entries.forEach(e=> byDay[e.date]=(byDay[e.date]||0)+1);
+  const steps = ['var(--grid)','var(--seq-100)','var(--seq-250)','var(--seq-400)','var(--seq-700)'];
+  ['I','','R','','J','','A'].forEach((t,i)=>{
+    if(!t) return;
+    const e = svgEl('text',{x:0,y:offY+i*(cell+gap)+cell-2,'font-size':9,fill:'var(--muted)','font-family':'var(--font)'});
+    e.textContent=t; svg.appendChild(e);
+  });
+  for(let w=0; w<weeks; w++){
+    for(let d=0; d<7; d++){
+      const date = shift(start, w*7+d);
+      if(date > today()) continue;
+      const v = byDay[date]||0;
+      const s = v===0?0 : v===1?1 : v===2?2 : v<=4?3:4;
+      const r = svgEl('rect',{x:offX+w*(cell+gap), y:offY+d*(cell+gap), width:cell, height:cell, rx:3.5,
+        fill:steps[s]});
+      svg.appendChild(r);
+      bindTip(r, `${pretty(date)} — ${v} aktiviti`);
+    }
+  }
+  const lg = svgEl('text',{x:offX, y:9,'font-size':9.5,fill:'var(--muted)','font-family':'var(--font)'});
+  lg.textContent='kurang → banyak'; svg.appendChild(lg);
+  [1,2,3,4].forEach((s,i)=>{
+    svg.appendChild(svgEl('rect',{x:offX+gridW-4*(cell+2)+i*(cell+2), y:1, width:cell-3, height:cell-3, rx:2.5, fill:steps[s]}));
+  });
+  const host=document.getElementById('chartHeat'); host.innerHTML=''; host.appendChild(svg);
+  const days = activeDays();
+  let hit=0; for(let i=0;i<84;i++) if(days.has(shift(today(),-i))) hit++;
+  const n = document.createElement('div'); n.className='note';
+  n.textContent = `${hit} daripada 84 hari lepas ada rekod (${Math.round(hit/84*100)}% konsisten). Warna biru makin kuat = makin banyak aktiviti hari tu.`;
+  host.appendChild(n);
+}
+
+/* ─────────────  HISTORY  ───────────── */
+function renderMemory(){
+  const box = document.getElementById('memBox'); if(!box) return;
+  const M = db.memory || {fakta:[],corak:[],janji:[]};
+  const open = M.janji.filter(j=>j.status==='terbuka');
+  const closed = M.janji.filter(j=>j.status!=='terbuka');
+  const line = (txt, sub, onDel, tag) =>
+    `<div class="mem-item">${tag||''}<div>${esc(txt)}${sub?`<div style="font-size:11.5px;color:var(--muted)">${esc(sub)}</div>`:''}</div>
+     <button class="x" data-del="${onDel}">✕</button></div>`;
+
+  if(!M.fakta.length && !M.corak.length && !M.janji.length && !M.progression){
+    box.innerHTML = `<div class="empty">Belum ada memori. Bob Dyno mula ingat selepas beberapa report —
+      fakta tentang kamu, corak yang berulang, dan janji yang kamu buat sendiri.</div>`;
+    return;
+  }
+  let h = '';
+  if(M.progression) h += `<div class="hist-rep" style="margin:0 0 12px"><b>Arah keseluruhan</b><br>${esc(M.progression)}</div>`;
+  if(open.length){
+    h += `<h2 style="margin:14px 0 4px">Janji terbuka (${open.length})</h2>`;
+    h += open.map((j,i)=> line(j.teks, 'sejak '+relLabel(j.sejak), 'janji:'+M.janji.indexOf(j), '<span class="mem-tag tag-open">TERBUKA</span>')).join('');
+  }
+  if(M.fakta.length){
+    h += `<h2 style="margin:16px 0 4px">Fakta tentang kamu (${M.fakta.length})</h2>`;
+    h += M.fakta.map((f,i)=> line(f.teks||f, f.sejak?('dari '+relLabel(f.sejak)):'', 'fakta:'+i)).join('');
+  }
+  if(M.corak.length){
+    h += `<h2 style="margin:16px 0 4px">Corak yang dikesan (${M.corak.length})</h2>`;
+    h += M.corak.map((c,i)=> line(c.teks||c, c.sejak?('dari '+relLabel(c.sejak)):'', 'corak:'+i)).join('');
+  }
+  if(closed.length){
+    h += `<h2 style="margin:16px 0 4px">Janji lepas (${closed.length})</h2>`;
+    h += closed.slice(-8).map(j=> line(j.teks, '', 'janji:'+M.janji.indexOf(j),
+      `<span class="mem-tag ${j.status==='selesai'?'tag-done':'tag-drop'}">${j.status.toUpperCase()}</span>`)).join('');
+  }
+  h += `<button class="btn ghost" id="memClear" style="margin-top:14px;color:var(--critical)">Padam semua memori</button>
+        <div class="note">Memori disimpan dalam peranti ini sahaja, sama macam data lain.</div>`;
+  box.innerHTML = h;
+
+  box.querySelectorAll('[data-del]').forEach(b=>{
+    b.onclick = ()=>{
+      const [kind, idx] = b.dataset.del.split(':');
+      db.memory[kind].splice(+idx,1); save(); renderMemory(); toast('Memori dipadam');
+    };
+  });
+  document.getElementById('memClear').onclick = ()=>{
+    if(!confirm('Padam semua memori Bob Dyno? Rekod harian kekal.')) return;
+    db.memory = {fakta:[],corak:[],janji:[],progression:'',updated:''}; save(); renderMemory(); toast('Memori dikosongkan');
+  };
+}
+
+function renderHistory(){
+  const box = document.getElementById('history');
+  const dates = [...new Set(db.entries.map(e=>e.date))].sort().reverse();
+  if(!dates.length){ box.innerHTML='<div class="empty">Belum ada sejarah rekod.</div>'; return; }
+  box.innerHTML='';
+  dates.slice(0,60).forEach(d=>{
+    const h = document.createElement('div');
+    h.style.cssText='display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--text-secondary);margin:16px 0 4px';
+    const r = db.refl[d];
+    const rp = db.reports?.[d];
+    const lbl = document.createElement('span');
+    lbl.textContent = relLabel(d) + (r?.mood ? '  '+MOODS[r.mood-1] : '');
+    h.appendChild(lbl);
+    const gb = document.createElement('button');
+    gb.className = 'mini-gen';
+    gb.textContent = !rp ? '✨ Jana report' : (rp.stale ? '🔄 Jana semula' : '');
+    if(gb.textContent){
+      if(rp?.stale) gb.classList.add('stale');
+      gb.onclick = ()=> genReport(d);
+      h.appendChild(gb);
+    }
+    box.appendChild(h);
+    db.entries.filter(e=>e.date===d).forEach(e=> box.appendChild(entryEl(e)));
+    if(r?.lesson || r?.improve){
+      const n = document.createElement('div');
+      n.className='note';
+      n.textContent = [r.lesson && '💡 '+r.lesson, r.improve && '🎯 '+r.improve].filter(Boolean).join('  ·  ');
+      box.appendChild(n);
+    }
+    const rep = db.reports?.[d];
+    if(rep){
+      const rb = document.createElement('div');
+      rb.className='hist-rep';
+      rb.innerHTML = `<b style="color:var(--s4)">${starStr(rep.stars)}</b> <span style="font-variant-numeric:tabular-nums">${(+rep.stars).toFixed(1)}/5</span> — ${esc(rep.verdict).slice(0,120)}…`;
+      rb.style.cursor='pointer';
+      rb.onclick = ()=> showReport(rep);
+      box.appendChild(rb);
+    }
+  });
+}
+
+/* ─────────────  NAV / THEME / DATA  ───────────── */
+document.querySelector('nav').onclick = ev=>{
+  const b = ev.target.closest('button'); if(!b) return;
+  document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-pressed', x===b));
+  document.querySelectorAll('.view').forEach(v=> v.classList.toggle('active', v.id==='v-'+b.dataset.v));
+  if(b.dataset.v==='baik') kira('sunyi_buka');
+  scrollTo({top:0});
+  renderAll();
+};
+document.getElementById('themeBtn').onclick = ()=>{
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur==='dark' ? 'light' : cur==='light' ? '' : 'dark';
+  if(next) document.documentElement.setAttribute('data-theme', next);
+  else document.documentElement.removeAttribute('data-theme');
+  localStorage.setItem('naikdiri.theme', next);
+  renderAll();
+};
+{ const t = localStorage.getItem('naikdiri.theme'); if(t) document.documentElement.setAttribute('data-theme',t); }
+
+document.getElementById('exportBtn').onclick = ()=>{
+  const blob = new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = `naikdiri-backup-${today()}.json`; a.click();
+  toast('✓ Backup dimuat turun');
+};
+document.getElementById('importBtn').onclick = ()=> document.getElementById('fileIn').click();
+document.getElementById('fileIn').onchange = ev=>{
+  const f = ev.target.files[0]; if(!f) return;
+  const rd = new FileReader();
+  rd.onload = ()=>{
+    try{
+      const d = JSON.parse(rd.result);
+      if(!Array.isArray(d.entries)) throw 0;
+      db = {entries:d.entries, refl:d.refl||{}, targets:{...DEF_TARGET, ...(d.targets||{})}, reports:d.reports||{}, memory:Object.assign({fakta:[],corak:[],janji:[],progression:'',updated:''}, d.memory||{}), settings:Object.assign({name:'',hour:21,auto:1,key:'',model:''}, d.settings||{})};
+      window.db = db; syncSettings(); paintName();
+      save(); renderAll(); toast('✓ Data dipulihkan');
+    }catch(e){ toast('Fail tidak sah'); }
+  };
+  rd.readAsText(f);
+};
+document.getElementById('resetBtn').onclick = ()=>{
+  if(!confirm('Padam SEMUA data? Tindakan ini tak boleh dibatalkan.')) return;
+  db = {entries:[], refl:{}, targets:{...DEF_TARGET}, reports:{}, settings:db.settings}; window.db = db; save(); renderAll(); toast('Data dipadam');
+};
+
+let toastT;
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastT); toastT = setTimeout(()=>el.classList.remove('show'), 2000);
+}
+
+
+/* ═══════════  BOB DYNO — COACH & REPORT MALAM  ═══════════ */
+const DYNO_SVG = `<img src="data:image/png;base64,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" alt="Bob Dyno" width="128" height="128">`;
+document.getElementById('brandMark').innerHTML = DYNO_SVG;
+
+db.settings = Object.assign({name:'', hour:21, auto:1, key:'', model:''}, db.settings||{});
+db.reports ??= {};
+db.memory = Object.assign({fakta:[], corak:[], janji:[], progression:'', updated:''}, db.memory||{});
+
+/* ── Hasil quiz "Kembali Bangun" masuk melalui ?setup= ── */
+(function applySetup(){
+  try{
+    const raw = new URLSearchParams(location.search).get('setup');
+    if(!raw) return;
+    const d = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(raw)))));
+    if(!d || d.dari !== 'quiz') return;
+    if(db.settings.quizApplied) return;            // sekali sahaja
+
+    if(d.targets) db.targets = Object.assign({}, DEF_TARGET, d.targets);
+    if(d.fokus)   db.settings.fokus = d.fokus;
+    const today0 = today();
+    (d.fakta||[]).slice(0,6).forEach(t=>{
+      const teks = String(t).slice(0,200);
+      if(teks && !db.memory.fakta.some(f=>(f.teks||f)===teks))
+        db.memory.fakta.push({teks, sejak:today0});
+    });
+    (d.janji||[]).slice(0,3).forEach(t=>{
+      const teks = String(t).slice(0,180);
+      if(teks && !db.memory.janji.some(j=>j.teks===teks))
+        db.memory.janji.push({teks, status:'terbuka', sejak:today0, dikemas:today0});
+    });
+    db.settings.quizApplied = true;
+    save();
+    history.replaceState(null,'',location.pathname);   // bersihkan URL
+  }catch(e){}
+})();
+save();
+
+/* ── Trend: 7 hari ini lawan 7 hari sebelum (dikira lokal, bukan oleh AI) ── */
+function trendData(date){
+  const win = (from, to) => db.entries.filter(e=> e.date>=from && e.date<=to);
+  const A = win(shift(date,-6), date);            // minggu ini
+  const B = win(shift(date,-13), shift(date,-7)); // minggu sebelum
+  const avgNote = L => L.length ? Math.round(L.reduce((a,e)=>a+(e.note||'').length,0)/L.length) : 0;
+  const stars = L => {
+    const v = L.map(d=>db.reports?.[d]?.stars).filter(x=>typeof x==='number');
+    return v.length ? +(v.reduce((a,b)=>a+b,0)/v.length).toFixed(1) : null;
+  };
+  const days = (from,to)=>{ const out=[]; for(let d=from; d<=to; d=shift(d,1)) out.push(d); return out; };
+  const catDelta = {};
+  CATS.forEach(c=>{
+    const a = A.filter(e=>e.cat===c.id).length, b = B.filter(e=>e.cat===c.id).length;
+    if(a!==b) catDelta[c.label] = `${b} → ${a}`;
+  });
+  const activeA = new Set(A.map(e=>e.date)).size, activeB = new Set(B.map(e=>e.date)).size;
+  const firstDate = db.entries.length ? db.entries.map(e=>e.date).sort()[0] : date;
+  const jumlahHari = new Set(db.entries.map(e=>e.date)).size;
+  return {
+    hari_aktif: `${activeB}/7 → ${activeA}/7`,
+    aktiviti: `${B.length} → ${A.length}`,
+    purata_panjang_nota: `${avgNote(B)} → ${avgNote(A)} aksara`,
+    purata_bintang: `${stars(days(shift(date,-13),shift(date,-7)))??'-'} → ${stars(days(shift(date,-6),date))??'-'}`,
+    perubahan_kategori: catDelta,
+    mula_guna_app: pretty(firstDate),
+    jumlah_hari_ada_rekod: jumlahHari
+  };
+}
+
+/* Nama panggilan pengguna */
+const U  = ()=> (db.settings.name||'').trim() || 'kamu';
+const Uc = ()=> (db.settings.name||'').trim() || 'Kamu';
+function paintName(){ document.querySelectorAll('.uname').forEach(el=> el.textContent = U()); }
+
+/* Kata kunci untuk nilai KUALITI & KEDALAMAN */
+const W_ACTION = ['praktik','praktikkan','buat','bina','binaan','siap','siapkan','repair','baiki','betulkan','pasang','setup','set up','connect','sambung','hantar','post','posting','share','jual','ajar','ajarkan','latih','tulis','karang','cipta','rakam','edit','launch','deploy','uji','test','selesai','settle','jumpa','temu','meeting','solat','qiam','senam','jogging','jalan kaki','gym','angkat','puasa','sedekah','derma','bantu','tolong','masak','main','bawa','hantar anak','borak','sembang','call','telefon','apply','daftar','automate','automasi','integrate','fix','debug','demo','pitch','rundingan'];
+const W_LEARN  = ['belajar','study','kursus','kelas','webinar','workshop','baca','buku','artikel','video','tutorial','kaji','research','dengar','tengok','scroll','podcast','nota','notakan','review','semak','research'];
+
+function has(txt, list){ const t=txt.toLowerCase(); return list.some(w=> t.includes(w)); }
+function words(t){ return (t||'').toLowerCase().replace(/[^a-z0-9À-ɏ ]/g,' ').split(/\s+/).filter(w=>w.length>3); }
+
+/* ── Enjin skor: 100% pada kualiti & kedalaman ── */
+function scoreDay(date){
+  const list = db.entries.filter(e=>e.date===date);
+  const r = db.refl[date] || {};
+  if(!list.length) return {none:true, score:0, stars:0, parts:{doc:0,act:0,ref:0,fol:0}, list, r};
+
+  // 1) Dokumentasi (0–25): setiap rekod ada nota yang bermakna?
+  const docAvg = list.reduce((a,e)=> a + Math.min(1, (e.note||'').trim().length/55), 0) / list.length;
+  const doc = docAvg*25;
+
+  // 2) Praktik & hasil (0–30): buat sesuatu > sekadar serap
+  let act = 0, nAction = 0, nPassive = 0;
+  list.forEach(e=>{
+    const txt = e.title+' '+(e.note||'');
+    let v;
+    if(has(txt, W_ACTION)){ v=1; nAction++; }
+    else if(has(txt, W_LEARN)){ v=0.5; nPassive++; }
+    else v=0.7;
+    act += v;
+  });
+  act = (act/list.length)*30;
+
+  // 3) Refleksi (0–25): pelajaran + niat esok, dinilai ikut isi
+  const lz = Math.min(1,(r.lesson||'').trim().length/45)*12;
+  const iz = Math.min(1,(r.improve||'').trim().length/45)*13;
+  const ref = lz+iz;
+
+  // 4) Follow-through (0–20): niat semalam jadi tindakan hari ni?
+  const y = db.refl[shift(date,-1)]?.improve || '';
+  let fol = 12, folHit = null; // neutral kalau semalam tak tulis niat
+  if(y.trim().length>6){
+    const kw = words(y), body = list.map(e=>e.title+' '+(e.note||'')).join(' ').toLowerCase();
+    const hit = kw.filter(w=> body.includes(w));
+    if(hit.length >= Math.max(1, Math.ceil(kw.length*0.18))){ fol = 20; folHit = y; }
+    else fol = 4;
+  }
+
+  let score = Math.round(doc+act+ref+fol);
+  if(list.length===1) score = Math.min(score, 92); // satu rekod = bukti masih nipis
+  const stars = Math.max(1, Math.min(5, Math.round(score/20*10)/10));
+  return {score, stars, parts:{doc,act,ref,fol}, list, r, nAction, nPassive, folHit, yImprove:y};
+}
+
+function starStr(n){
+  const f = Math.round(n);
+  return '★'.repeat(f) + '☆'.repeat(5-f);
+}
+
+/* ── Enjin coach offline ── */
+function localReport(date){
+  const S = scoreDay(date);
+  if(S.none){
+    return {date, src:'local', stars:0, score:0, parts:S.parts,
+      verdict:`Hari ni kosong — tiada rekod langsung. Bukan bermakna ${U()} tak buat apa-apa; cuma tak dicatat, jadi tak boleh dinilai.`,
+      done:[], fix:['Tiada rekod hari ini — memori esok akan lupa apa yang berlaku hari ni.'],
+      next:['Catat SATU perkara sekarang, walaupun kecil. Rekod tak sempurna lebih baik dari rekod kosong.']};
+  }
+  const {list, r, parts} = S;
+  const counts = countByCat(list);
+  const hit = CATS.filter(c=>counts[c.id]>0);
+
+  // DAH BUAT
+  let bestI = -1, bestLen = 40;
+  list.forEach((e,i)=>{ const l=(e.note||'').trim().length; if(l>bestLen){bestLen=l; bestI=i;} });
+  const done = list.map((e,i)=>{
+    const c = CAT[e.cat];
+    return `${c.icon} ${e.title}` + (i===bestI ? ' — nota paling jelas hari ni; itu yang buat pengalaman jadi ilmu tersimpan.' : '');
+  });
+  if(S.nAction>=2) done.push(`${Uc()} buat ${S.nAction} perkara berbentuk tindakan/hasil hari ni, bukan sekadar serap maklumat.`);
+  if(S.folHit) done.push(`Niat semalam ("${S.yImprove}") betul-betul ditunaikan hari ni. Ini yang paling susah orang buat.`);
+
+  // PERLU DIPERBAIKI (ikut keutamaan)
+  const fix = [];
+  const noNote = list.filter(e=>!(e.note||'').trim()).length;
+  if(noNote) fix.push(`${noNote} daripada ${list.length} rekod tiada nota. Tajuk cerita APA yang berlaku; nota cerita APA yang ${U()} belajar — yang kedua tu yang kekal.`);
+  if(S.nAction===0) fix.push('Semua rekod hari ni jenis menyerap (belajar/baca/tengok). Ilmu yang tak dipraktik hilang dalam 3 hari.');
+  if(!(r.lesson||'').trim()) fix.push('Refleksi "pelajaran hari ni" kosong. Tanpa muhasabah, hari-hari jadi rutin yang berulang tanpa naik taraf.');
+  if(!(r.improve||'').trim()) fix.push('Tiada niat untuk esok. Esok akan bermula tanpa arah — apa yang datang, itu yang dibuat.');
+  if(S.yImprove && !S.folHit) fix.push(`Semalam ${U()} tulis nak "${S.yImprove}" — tak nampak dalam rekod hari ni. Niat yang tak disusuli jadi tabiat berjanji kosong pada diri sendiri.`);
+  if(hit.length===1) fix.push(`Semua ${list.length} rekod jatuh dalam satu kategori (${hit[0].label}). Hari yang berat sebelah nampak produktif, tapi bahagian lain hidup senyap-senyap terhakis.`);
+  if(list.length===1 && (list[0].note||'').length<30) fix.push('Satu rekod pendek sahaja. Bukan salah — cuma tak cukup bahan untuk dinilai atau dipelajari kemudian.');
+  const avgLen = list.reduce((a,e)=>a+(e.note||'').length,0)/list.length;
+  if(noNote===0 && avgLen<35) fix.push('Nota ada, tapi terlalu ringkas. Tambah "kenapa penting" atau "apa yang tak jangka" — dua ayat sudah cukup.');
+
+  if(!fix.length){
+    const w = [['doc',parts.doc/25,'Nota dah ada, tapi boleh lagi dalam — tambah "kenapa ini penting" pada satu rekod penting esok.'],
+               ['act',parts.act/30,'Nisbah praktik berbanding serapan boleh dinaikkan lagi — satu lagi aktiviti berbentuk hasil sudah cukup.'],
+               ['ref',parts.ref/25,`Refleksi boleh ditulis lebih tajam — sebut satu perkara SPESIFIK yang berubah dalam kepala ${U()} hari ni.`],
+               ['fol',parts.fol/20, S.yImprove ? 'Follow-through pada niat semalam masih longgar.' : 'Semalam tiada niat bertulis, jadi hari ni tiada apa nak diukur follow-through. Tulis niat malam ni.']]
+              .sort((a,b)=>a[1]-b[1])[0];
+    fix.push(w[2]);
+    fix.push('Tiada kelemahan besar hari ni. Bahaya sebenar bukan hari yang lemah — tapi hari yang baik yang tak diulang esok.');
+  }
+
+  // PENAMBAHBAIKAN ESOK
+  const next = [];
+  if((r.improve||'').trim()) next.push(`Tunaikan niat sendiri: ${r.improve}`);
+  if(S.nPassive>0 && S.nAction===0){
+    const src = list.find(e=> has(e.title+' '+(e.note||''), W_LEARN));
+    next.push(`Ambil ilmu "${src?src.title:'yang dibaca hari ni'}" dan praktik 20 minit esok. Satu praktik kecil > lima video.`);
+  }
+  const wkFrom = weekStartMonday();
+  const wk = countByCat(db.entries.filter(e=>e.date>=wkFrom));
+  const kosong = CATS.filter(c=> (db.targets[c.id]||0)>0 && wk[c.id]===0);
+  if(kosong.length) next.push(`Minggu ni ${kosong.map(c=>c.label).join(' & ')} masih kosong. Letak satu aktiviti kecil esok — ${kosong[0].id==='sihat'?'jalan kaki 15 minit pun kira':kosong[0].id==='rohani'?'lima minit muhasabah pun kira':'satu langkah kecil pun kira'}.`);
+  if(noNote) next.push('Sebelum tidur esok, tulis satu ayat nota untuk setiap rekod. Sepuluh saat, tapi nilainya berbulan.');
+  const st = streak(), bs = bestStreak();
+  if(st>0 && st < bs) next.push(`Streak sekarang ${st} hari; rekod terbaik ${U()} ${bs} hari. Tinggal ${bs-st+1} hari untuk pecah rekod sendiri.`);
+  else if(st>=bs && st>0) next.push(`Streak ${st} hari — ini rekod terbaik ${U()} setakat ni. Jangan putus esok.`);
+  if(!next.length) next.push(`Kekalkan momentum yang sama esok, dan tambah satu tahap kesukaran pada perkara yang ${U()} dah mahir.`);
+
+  // VERDICT
+  const sc = S.score;
+  const v =
+    sc>=85 ? `Hari yang padat DAN terdokumentasi. ${Uc()} bukan sekadar sibuk — ${U()} boleh buktikan apa yang berlaku dan apa yang dipelajari. Ini standard yang patut jadi normal, bukan kejutan.` :
+    sc>=70 ? `Hari yang baik. Ada tindakan sebenar dan ada catatan. Yang tinggal cuma kedalaman — sedikit lagi usaha pada nota dan refleksi, ini jadi hari cemerlang.` :
+    sc>=50 ? `Sederhana. ${Uc()} ada bergerak, tapi separuh nilai hari ni hilang sebab tak dicatat dengan cukup dalam. Perkara yang sama, dengan dokumentasi lebih baik, boleh jadi dua kali ganda nilainya.` :
+    sc>=30 ? `Lemah dari segi kedalaman. Ada aktiviti, tapi hampir tiada bukti pembelajaran. Enam bulan lagi ${U()} takkan ingat apa-apa dari hari ni.` :
+    `Hari ni tercatat secara minimum sahaja. Bukan penilaian pada nilai diri ${U()} — penilaian pada bahan yang ada. Beri bahan lebih, penilaian akan naik.`;
+
+  const analisa = list.map(e=>{
+    const txt = e.title+' '+(e.note||''), n = (e.note||'').trim().length;
+    const jenis = has(txt,W_ACTION)?'praktik' : has(txt,W_LEARN)?'serapan' :
+                  e.cat==='kelrg'?'hubungan' : (e.cat==='sihat'||e.cat==='rohani')?'penjagaan':'pengurusan';
+    const skor = Math.max(1, Math.min(10, Math.round((jenis==='praktik'?6:jenis==='serapan'?3:5) + Math.min(4, n/30))));
+    return {tajuk:e.title, jenis, skor,
+      nilai: `Direkod sebagai ${CAT[e.cat].label.toLowerCase()}, dikelaskan ${jenis}.`,
+      lemah: n===0 ? 'Tiada nota — tiada bukti apa yang berlaku atau apa yang dipelajari.'
+           : n<40 ? 'Nota terlalu ringkas untuk dinilai kedalamannya.'
+           : 'Nota mencukupi.',
+      naik_taraf: jenis==='serapan' ? 'Praktikkan satu bahagian daripada ilmu ni esok.'
+                : n<40 ? 'Tambah dua ayat nota: apa yang tak dijangka, dan kenapa ia penting.'
+                : 'Naikkan satu tahap kesukaran pada perkara yang sama esok.'};
+  });
+  const openP = (db.memory?.janji||[]).filter(j=>j.status==='terbuka').slice(-2);
+  openP.forEach(j=> next.push(`Janji kamu sendiri masih terbuka: ${j.teks}`));
+  return {date, src:'local', stars:S.stars, score:sc, parts, analisa, trend:trendData(date),
+          verdict:v, done:done.slice(0,6), fix:fix.slice(0,4), next:next.slice(0,5)};
+}
+
+/* ── Bina data hari untuk AI ── */
+function buildPayload(date){
+  const S = scoreDay(date);
+  return {payload:{
+    nama: U(),
+    tarikh: pretty(date),
+    streak_hari: streak(),
+    rekod_terbaik: bestStreak(),
+    aktiviti: S.list.map(e=>({kategori:CAT[e.cat].label, tajuk:e.title, nota:e.note||''})),
+    refleksi: db.refl[date] || {},
+    niat_semalam: db.refl[shift(date,-1)]?.improve || '',
+    kiraan_minggu_ini: countByCat(db.entries.filter(e=>e.date>=weekStartMonday())),
+    aktiviti_7_hari: db.entries.filter(e=> e.date>=shift(date,-7) && e.date<date)
+                       .slice(-18)
+                       .map(e=>({tarikh:e.date, kategori:CAT[e.cat].label, tajuk:e.title})),
+    saranan_semalam: db.reports?.[shift(date,-1)]?.next || [],
+    balasan_pengguna_semalam: db.reports?.[shift(date,-1)]?.reply || '',
+    balasan_pengguna_hari_ini: db.reports?.[date]?.reply || '',
+    memori: {
+      fakta: db.memory.fakta.slice(-20),
+      corak: db.memory.corak.slice(-10),
+      janji: db.memory.janji.filter(j=>j.status==='terbuka').slice(-12)
+               .concat(db.memory.janji.filter(j=>j.status!=='terbuka').slice(-4)),
+      progression: db.memory.progression
+    },
+    trend: trendData(date),
+    /* Catatan Sunyi dihantar sebagai LATAR sahaja supaya coach faham
+       hari dia dengan lebih penuh. Ia TIDAK masuk skor, dan prompt server
+       melarang coach memberi markah atau memuji jumlahnya. */
+    catatan_sunyi_hari_ini: (db.baik||[]).filter(x=>x.date===date).map(x=>x.teks),
+    catatan_sunyi_7_hari: (db.baik||[]).filter(x=>x.ts >= Date.now()-7*864e5).length,
+    sasaran_mingguan: db.targets,
+    skor_enjin: {jumlah:S.score, dokumentasi:Math.round(S.parts.doc), praktik:Math.round(S.parts.act),
+                 refleksi:Math.round(S.parts.ref), follow_through:Math.round(S.parts.fol)}
+  }, S};
+}
+
+/* ── Gabung memori baharu ke dalam simpanan, dengan had saiz ── */
+const norm = t => String(t||'').toLowerCase().replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
+function mergeMemory(m, date){
+  const M = db.memory;
+  const addUniq = (arr, items, cap)=>{
+    (items||[]).forEach(x=>{
+      const t = String(x).trim(); if(!t) return;
+      if(arr.some(y=> norm(y.teks||y)===norm(t))) return;
+      arr.push({teks:t, sejak:date});
+    });
+    while(arr.length>cap) arr.shift();
+  };
+  addUniq(M.fakta, m.fakta, 40);
+  addUniq(M.corak, m.corak, 14);
+
+  (m.janji||[]).forEach(j=>{
+    const found = M.janji.find(x=> norm(x.teks)===norm(j.teks));
+    if(found){ found.status = j.status; found.dikemas = date; }
+    else M.janji.push({teks:j.teks, status:j.status||'terbuka', sejak:date, dikemas:date});
+  });
+  // simpan semua yang terbuka; yang selesai/gugur simpan 20 terkini sahaja
+  const open = M.janji.filter(j=>j.status==='terbuka');
+  const closed = M.janji.filter(j=>j.status!=='terbuka').slice(-20);
+  M.janji = open.concat(closed);
+  if(M.janji.length>40) M.janji = M.janji.slice(-40);
+
+  if(m.progression) M.progression = m.progression;
+  M.updated = date;
+  save();
+}
+
+/* ── Laluan 1: server Bob Dyno (pengguna tak perlu key) ── */
+function netlifyBlock(res, ct){
+  // Balasan bukan-JSON pada 401/403 = lapisan akses Netlify, bukan fungsi kita
+  if(res.status===401 || res.status===403)
+    return 'Netlify sekat permintaan sebelum sampai ke fungsi ('+res.status+'). '
+         + 'Site masih PRIVATE — buka Netlify → Project configuration → General → Visitor access → Project visibility → Public.';
+  if(res.status===404) return 'Fungsi /api/coach tiada pada deploy ini. Pastikan folder netlify/functions + netlify.toml sudah di-upload, kemudian deploy semula.';
+  if(res.status===504 || res.status===502)
+    return 'AI ambil masa terlalu lama sehingga Netlify putuskan sambungan ('+res.status+'). Cuba lagi — atau kurangkan bilangan aktiviti untuk hari ni.';
+  return 'Server balas '+res.status+' tanpa butiran (bukan dari fungsi).';
+}
+
+async function serverReport(date){
+  const {payload, S} = buildPayload(date);
+  const res = await fetch('/api/coach', {
+    method:'POST', headers:{'content-type':'application/json','x-bob-peranti':peranti()},
+    body: JSON.stringify({payload})
+  });
+  const ct = res.headers.get('content-type')||'';
+  if(!ct.includes('json')) throw new Error(netlifyBlock(res, ct));
+  const j = await res.json().catch(()=>({error:'Balasan server tak sah'}));
+  if(!res.ok) throw new Error(j.error || ('Server '+res.status));
+  if(j.memori_baru) mergeMemory(j.memori_baru, date);
+  kira('report');
+  return {date, src:'ai', stars:Math.max(1,Math.min(5,+j.stars||3)), score:Math.round((+j.stars||3)*20),
+          parts:S.parts, verdict:j.verdict||'', analisa:j.analisa||[], done:j.done||[],
+          fix:j.fix||[], next:j.next||[], trend:trendData(date)};
+}
+
+/* ── Laluan 2: key sendiri (pilihan lanjutan) ── */
+async function aiReport(date){
+  const key = db.settings.key, model = db.settings.model;
+  if(!key || !model) throw new Error('no-key');
+  const {payload, S} = buildPayload(date);
+  const sys = `Kamu BOB DYNO — jurulatih peribadi untuk pengguna Malaysia bernama ${U()}. Moto: BUILD. INSPIRE. LEAD.
+Tugas: tulis report malam untuk hari ini.
+
+PERATURAN:
+- Bahasa Melayu santai-profesional (mentor yang rapat, bukan motivator murahan). Istilah teknikal boleh kekal English.
+- Suara tegas, yakin, sedikit garang bila perlu — tapi sentiasa berpihak pada ${U()}.
+- JUJUR. Kalau hari tu lemah, cakap terus terang dengan hormat.
+- Panggil dia "${U()}" dalam report.
+
+PROSES WAJIB — ikut turutan ini:
+
+LANGKAH 1 — ANALISA SETIAP AKTIVITI SATU PERSATU.
+Untuk SETIAP aktiviti dalam senarai (jangan tinggal mana-mana, jangan gabungkan dua jadi satu),
+fikir dan tulis:
+  - jenis   : klasifikasi sebenar aktiviti tu — "praktik" (buat/hasilkan sesuatu),
+              "serapan" (baca/tengok/dengar), "hubungan" (masa dengan manusia),
+              "penjagaan" (badan/rohani), atau "pengurusan" (admin/rutin).
+  - nilai   : apa nilai SEBENAR aktiviti ni pada hidup dia — bukan pujian umum.
+              Kalau nilainya kecil, cakap kecil.
+  - lemah   : apa yang hilang atau cetek pada aktiviti ni SPESIFIK.
+              Rujuk nota dia (atau ketiadaan nota) sebagai bukti.
+  - naik_taraf : SATU langkah konkrit untuk menaikkan aktiviti INI ke tahap seterusnya,
+              boleh dibuat dalam < 30 minit. Mesti khusus pada aktiviti ni, bukan nasihat umum.
+  - skor    : 1-10 untuk kedalaman aktiviti ni sahaja.
+
+Guna "aktiviti_7_hari" untuk semak PROGRESS: adakah aktiviti ni pengulangan perkara sama tanpa
+kemajuan, atau kesinambungan yang naik tahap? Sebut dalam "nilai" atau "lemah" kalau ada corak.
+
+LANGKAH 1B — SEMAK SARANAN KAMU SENDIRI SEMALAM.
+Kalau "saranan_semalam" ada isi, semak satu persatu: mana yang ditunaikan, mana tidak.
+Kalau "balasan_pengguna_semalam" ada isi, itu jawapan dia pada saranan kamu — ambil kira alasannya.
+Kalau "balasan_pengguna_hari_ini" ada isi, JAWAB terus balasan tu dalam verdict.
+
+LANGKAH 2 — baru buat kesimpulan.
+verdict, fix dan next MESTI terbit daripada analisa Langkah 1 dan merujuk aktiviti sebenar
+dengan namanya. DILARANG memberi nasihat generik yang boleh ditampal pada sesiapa sahaja
+("kekalkan momentum", "teruskan usaha", "jangan putus asa" — semua ini haram).
+Kalau tiada apa nak dikritik, cari perkara yang paling hampir gagal dan terangkan kenapa.
+
+LANGKAH 3 — bintang.
+Berdasarkan KUALITI & KEDALAMAN sahaja (purata skor aktiviti + adakah didokumentasi +
+adakah refleksi ditulis + adakah niat semalam ditunaikan). Kuantiti TIDAK menaikkan bintang.
+Sepuluh aktiviti cetek = bintang rendah. Satu aktiviti dalam = bintang tinggi.
+
+Balas HANYA JSON sah, tiada teks lain, ikut turutan kunci ini:
+{"analisa":[{"tajuk":"<tajuk aktiviti persis seperti diberi>","jenis":"<praktik|serapan|hubungan|penjagaan|pengurusan>",
+  "nilai":"<1-2 ayat>","lemah":"<1-2 ayat>","naik_taraf":"<1 ayat, konkrit>","skor":<1-10>}, ...satu untuk SETIAP aktiviti],
+ "stars":<1-5, boleh .5>,
+ "verdict":"<2-3 ayat, rujuk analisa di atas>",
+ "fix":["<kelemahan merentas hari ini, rujuk aktiviti tertentu>", ...max 4],
+ "next":["<tindakan konkrit esok, terbit dari naik_taraf di atas>", ...max 4]}`;
+
+  const mk = legacy => {
+    const b = {model, response_format:{type:'json_object'},
+      messages:[{role:'system', content:sys},
+                {role:'user', content:'Data hari ini:\n'+JSON.stringify(payload,null,1)}]};
+    if(legacy) b.max_tokens = 2600; else b.max_completion_tokens = 2600;
+    return {method:'POST', headers:{'content-type':'application/json', authorization:'Bearer '+key},
+            body: JSON.stringify(b)};
+  };
+  let res = await fetch('https://api.openai.com/v1/chat/completions', mk(false));
+  if(res.status===400) res = await fetch('https://api.openai.com/v1/chat/completions', mk(true));
+  if(!res.ok){ throw new Error('OpenAI '+res.status+' — '+(await res.text()).slice(0,110)); }
+  const j = await res.json();
+  let txt = (j.choices?.[0]?.message?.content||'').trim();
+  txt = txt.replace(/^```(json)?/i,'').replace(/```$/,'').trim();
+  const o = JSON.parse(txt);
+  if(o.memori_baru) mergeMemory(o.memori_baru, date);
+  return {date, src:'ai', stars:Math.max(1,Math.min(5,+o.stars||3)), score:Math.round((+o.stars||3)*20),
+          parts:S.parts, verdict:o.verdict||'', analisa:o.analisa||[], done:o.done||[],
+          fix:o.fix||[], next:o.next||[], trend:trendData(date)};
+}
+
+/* ── Render report ── */
+function repHTML(rep){
+  const li = a => (a&&a.length? '<ul>'+a.map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>' : '<div class="empty">—</div>');
+  const P = rep.parts||{doc:0,act:0,ref:0,fol:0};
+  const bar = (v,max,lbl)=>`<div><div class="tr"><div class="fl" style="width:${Math.round(v/max*100)}%"></div></div><div class="lbl">${lbl}<br>${Math.round(v)}/${max}</div></div>`;
+  return `
+  <div class="coach-head">
+    <div class="dyno" style="width:38px;height:38px">${DYNO_SVG}</div>
+    <div>
+      <div class="nm">Bob Dyno</div>
+      <div class="rl">Build · Inspire · Lead</div>
+    </div>
+    <button class="sheet-x" id="sheetX" style="margin-left:auto">✕</button>
+  </div>
+  <div class="sheet-head" style="margin-bottom:0">
+    <div>
+      <h3>Report Malam</h3>
+      <div class="d">${pretty(rep.date)}</div>
+    </div>
+  </div>
+  <div class="stars">${starStr(rep.stars)}</div>
+  <div class="score-line">${(+rep.stars).toFixed(1)} / 5 · skor kualiti ${rep.score}/100 ·
+    <span class="src-tag ${rep.src==='ai'?'':'local'}">${rep.src==='ai'?'Bob Dyno AI':'Enjin sandaran'}</span></div>
+  ${rep.stale ? `<div class="warn-box" style="background:color-mix(in srgb, var(--s1) 12%, transparent)">
+      <b>Rekod hari ni dah berubah selepas report ni dijana.</b><br>
+      Nota atau aktiviti yang ditambah belum dinilai.
+      <button class="btn ghost" id="retryAI" style="margin-top:8px">Jana semula report</button>
+    </div>` : ''}
+  ${rep.warn ? `<div class="warn-box">
+      <b>⚠ Saranan AI tak dapat dimuatkan.</b><br>${esc(rep.warn)}<br>
+      Penilaian di bawah ni dijana oleh enjin dalaman sebagai ganti sementara.
+      <button class="btn ghost" id="retryAI" style="margin-top:8px">Cuba semula dengan AI</button>
+    </div>` : ''}
+  <div class="verdict">${esc(rep.verdict)}</div>
+  ${rep.src==='local'? `<div class="bars-mini">
+      ${bar(P.doc,25,'Nota')}${bar(P.act,30,'Praktik')}${bar(P.ref,25,'Refleksi')}${bar(P.fol,20,'Tunai niat')}
+    </div>`:''}
+  ${(rep.analisa&&rep.analisa.length) ? `
+  <div class="rep-sec">
+    <h4>Analisa setiap aktiviti${rep.src==='ai'?'':' (ringkas)'}</h4>
+    ${rep.analisa.map(a=>`
+      <div class="an">
+        <div class="an-top">
+          <span class="an-t">${esc(a.tajuk)}</span>
+          <span class="an-s" style="--sc:${a.skor>=7?'var(--good)':a.skor>=4?'var(--warning)':'var(--critical)'}">${a.skor}/10</span>
+        </div>
+        <div class="an-j">${esc(a.jenis)}</div>
+        <div class="an-r"><b>Nilai</b>${esc(a.nilai)}</div>
+        <div class="an-r"><b>Lemah</b>${esc(a.lemah)}</div>
+        <div class="an-r up"><b>Naik taraf</b>${esc(a.naik_taraf)}</div>
+      </div>`).join('')}
+  </div>` : `<div class="rep-sec rep-done"><h4>Apa yang ${U()} dah buat</h4>${li(rep.done)}</div>`}
+  <div class="rep-sec rep-fix"><h4>Apa yang perlu diperbaiki</h4>${li(rep.fix)}</div>
+  <div class="rep-sec rep-next"><h4>Penambahbaikan untuk esok</h4>${li(rep.next)}</div>
+
+  ${(()=>{ const t = rep.trend || {}; const open = (db.memory?.janji||[]).filter(j=>j.status==='terbuka');
+    if(!t.hari_aktif && !open.length) return '';
+    return `<div class="rep-sec">
+      <h4>Progression — minggu lepas → minggu ni</h4>
+      <div class="trend">
+        ${t.hari_aktif ? `<div><span>Hari aktif</span><b>${esc(t.hari_aktif)}</b></div>`:''}
+        ${t.aktiviti ? `<div><span>Aktiviti</span><b>${esc(t.aktiviti)}</b></div>`:''}
+        ${t.purata_panjang_nota ? `<div><span>Purata nota</span><b>${esc(t.purata_panjang_nota)}</b></div>`:''}
+        ${t.purata_bintang ? `<div><span>Purata bintang</span><b>${esc(t.purata_bintang)}</b></div>`:''}
+      </div>
+      ${t.jumlah_hari_ada_rekod ? `<div class="note" style="margin-top:8px">Sejak ${esc(t.mula_guna_app)} — ${t.jumlah_hari_ada_rekod} hari ada rekod.</div>`:''}
+      ${open.length ? `<div style="margin-top:12px">
+        <div style="font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Janji yang masih terbuka</div>
+        ${open.slice(-5).map(j=>`<div class="promise"><span class="pdot"></span><div><b>${esc(j.teks)}</b><i>sejak ${esc(relLabel(j.sejak))}</i></div></div>`).join('')}
+      </div>`:''}
+    </div>`; })()}
+
+  <div class="reply-box">
+    <h4>Balas Bob Dyno</h4>
+    <div class="note">Tak setuju? Ada sebab? Tulis di sini. Balasan ni dibaca semasa report seterusnya —
+      Bob Dyno akan jawab dan sesuaikan saranannya.</div>
+    <textarea id="repReply" rows="3" placeholder="Contoh: Kesihatan memang tertangguh sebab minggu ni fokus siapkan projek. Minggu depan saya start balik."></textarea>
+    <button class="btn ghost" id="saveReply">Simpan balasan</button>
+    <div class="reply-saved" id="replySaved"></div>
+  </div>
+
+  <h4 style="font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700;margin:0 0 7px">Simpan / kongsi report</h4>
+  <div class="rep-actions">
+    <button id="repMail">✉️<br>Email</button>
+    <button id="repShare">📤<br>Kongsi</button>
+    <button id="repCopy">📋<br>Salin</button>
+    <button id="repFile">💾<br>Fail</button>
+  </div>
+  <div class="note" style="margin:-6px 0 12px">Report penuh boleh jadi panjang. <b>Kongsi</b> dan
+    <b>Fail</b> hantar teks penuh; <b>Email</b> akan salin ke clipboard dahulu kalau terlalu panjang.</div>
+  <button class="btn ghost" id="repDeep" style="margin-bottom:12px">🧠 Analisa mendalam dengan AI sendiri</button>
+  <div class="note" style="margin:-6px 0 14px">Untuk kes yang rumit — hantar 14 hari data + arahan siap ke ChatGPT,
+    Claude, atau mana-mana AI yang kamu ada. Percuma, guna langganan kamu sendiri.</div>
+
+  <button class="btn ghost" id="sheetClose">Tutup</button>`;
+}
+/* Teks mentah report — untuk email / kongsi / salin */
+function reportText(rep){
+  const L = [];
+  L.push(`BOB DYNO — REPORT MALAM`);
+  L.push(pretty(rep.date));
+  L.push(`Bintang: ${(+rep.stars).toFixed(1)}/5  (skor kualiti ${rep.score}/100)`);
+  L.push('');
+  L.push(rep.verdict);
+  if(rep.analisa?.length){
+    L.push(''); L.push('— ANALISA SETIAP AKTIVITI —');
+    rep.analisa.forEach(a=>{
+      L.push('');
+      L.push(`• ${a.tajuk}  [${a.jenis}] ${a.skor}/10`);
+      L.push(`  Nilai: ${a.nilai}`);
+      L.push(`  Lemah: ${a.lemah}`);
+      L.push(`  Naik taraf: ${a.naik_taraf}`);
+    });
+  }
+  if(rep.fix?.length){ L.push(''); L.push('— PERLU DIPERBAIKI —'); rep.fix.forEach(x=>L.push(`• ${x}`)); }
+  if(rep.next?.length){ L.push(''); L.push('— UNTUK ESOK —'); rep.next.forEach(x=>L.push(`• ${x}`)); }
+  if(rep.trend){ L.push(''); L.push('— PROGRESSION (minggu lepas → minggu ni) —');
+    L.push(`Hari aktif: ${rep.trend.hari_aktif}`);
+    L.push(`Aktiviti: ${rep.trend.aktiviti}`);
+    L.push(`Purata nota: ${rep.trend.purata_panjang_nota}`);
+    L.push(`Purata bintang: ${rep.trend.purata_bintang}`); }
+  if(rep.reply){ L.push(''); L.push('— BALASAN SAYA —'); L.push(rep.reply); }
+  L.push(''); L.push('Dijana oleh Bob Dyno — NADI');
+  return L.join('\n');
+}
+
+let curRep = null;
+function showReport(r){ curRep = r; openSheet(repHTML(r)); }
+
+function bindReportActions(){
+  const rep = curRep; if(!rep) return;
+
+  const ta = document.getElementById('repReply');
+  if(ta){
+    ta.value = rep.reply || '';
+    document.getElementById('saveReply').onclick = ()=>{
+      rep.reply = ta.value.trim(); db.reports[rep.date] = rep; save();
+      document.getElementById('replySaved').textContent =
+        rep.reply ? '✓ Disimpan. Bob Dyno akan jawab dalam report seterusnya.' : '';
+      toast('✓ Balasan disimpan');
+    };
+    if(rep.reply) document.getElementById('replySaved').textContent = '✓ Disimpan.';
+  }
+
+  const txt = ()=> reportText(db.reports[rep.date] || rep);
+  const subj = `Bob Dyno — Report ${pretty(rep.date)} (${(+rep.stars).toFixed(1)}/5)`;
+
+  document.getElementById('repMail')?.addEventListener('click', ()=> sendMail(subj, txt()));
+  document.getElementById('repShare')?.addEventListener('click', ()=> shareText(subj, txt()));
+  document.getElementById('repCopy')?.addEventListener('click', async ()=>{
+    await copyText(txt()); toast('✓ Report penuh disalin');
+  });
+  document.getElementById('repFile')?.addEventListener('click', ()=>
+    saveText(`bobdyno-report-${rep.date}.txt`, txt()));
+  document.getElementById('repDeep')?.addEventListener('click', openDeep);
+}
+
+/* ── Pakej untuk AI luar (ChatGPT / Claude / apa sahaja) ── */
+function deepPackage(days){
+  days = days || 14;
+  const from = shift(today(), -(days-1));
+  const L = [];
+  L.push(`Kamu jurulatih peribadi. Di bawah ni ${days} hari data log pembaikan diri ${U()} dari app Bob Dyno.`);
+  L.push('');
+  L.push('TUGAS KAMU:');
+  L.push('1. Kenal pasti CORAK — apa yang berulang tanpa kemajuan, apa yang betul-betul naik tahap,');
+  L.push('   kategori mana yang sistematik diabaikan dan kenapa (rujuk bukti dari nota).');
+  L.push('2. Kenal pasti PUNCA, bukan gejala. Kalau kesihatan asyik kosong, cari sebab struktur');
+  L.push('   dalam jadual dia, jangan sekadar suruh bersenam.');
+  L.push('3. Beri 3 cadangan yang mengubah SISTEM, bukan cadangan harian. Setiap satu mesti');
+  L.push('   konkrit dan boleh dimulakan minggu ni.');
+  L.push('4. Cakap terus terang. Kalau datanya nipis, kata nipis. Jangan puji tanpa asas.');
+  L.push('Jawab dalam Bahasa Melayu.');
+  L.push('');
+  L.push('=== DATA ===');
+  L.push(`Nama: ${U()}`);
+  L.push(`Streak semasa: ${streak()} hari · rekod terbaik: ${bestStreak()} hari`);
+  const wk = countByCat(db.entries.filter(e=>e.date>=from));
+  L.push('Kiraan kategori dalam tempoh ni: ' + CATS.map(c=>`${c.label}=${wk[c.id]}`).join(', '));
+  L.push(`Sasaran mingguan yang dia set: ` + CATS.map(c=>`${c.label}=${db.targets[c.id]||0}`).join(', '));
+  L.push('');
+  const dates = [...new Set(db.entries.filter(e=>e.date>=from).map(e=>e.date))].sort();
+  if(!dates.length) L.push('(tiada rekod dalam tempoh ni)');
+  dates.forEach(d=>{
+    L.push(`--- ${pretty(d)} ---`);
+    db.entries.filter(e=>e.date===d).forEach(e=>{
+      L.push(`• [${CAT[e.cat].label}] ${e.title}`);
+      if((e.note||'').trim()) L.push(`  nota: ${e.note}`);
+      else L.push(`  nota: (tiada)`);
+    });
+    const r = db.refl[d];
+    if(r?.lesson)  L.push(`  refleksi-pelajaran: ${r.lesson}`);
+    if(r?.improve) L.push(`  refleksi-niat-esok: ${r.improve}`);
+    const rep = db.reports?.[d];
+    if(rep){
+      L.push(`  bintang-coach: ${(+rep.stars).toFixed(1)}/5 (skor ${rep.score}/100)`);
+      if(rep.next?.length) L.push(`  saranan-coach: ${rep.next.join(' | ')}`);
+      if(rep.reply) L.push(`  balasan-saya: ${rep.reply}`);
+    }
+  });
+  const M = db.memory||{};
+  if(M.progression || M.fakta?.length || M.janji?.length){
+    L.push('');
+    L.push('--- MEMORI COACH ---');
+    if(M.progression) L.push(`arah keseluruhan: ${M.progression}`);
+    (M.fakta||[]).forEach(f=> L.push(`fakta: ${f.teks||f}`));
+    (M.corak||[]).forEach(c=> L.push(`corak: ${c.teks||c}`));
+    (M.janji||[]).forEach(j=> L.push(`janji [${j.status}]: ${j.teks}`));
+  }
+  L.push('=== TAMAT DATA ===');
+  return L.join('\n');
+}
+
+function openDeep(){
+  const txt = deepPackage(14);
+  openSheet(`
+    <div class="sheet-head"><div><h3>Analisa mendalam</h3>
+      <div class="d">14 hari data + arahan siap</div></div>
+      <button class="sheet-x" id="sheetX">✕</button></div>
+    <p class="note" style="margin:10px 0 12px">
+      Tekan <b>🤖 ChatGPT</b> untuk terus buka ChatGPT kamu dengan pakej ni — atau salin dan tampal
+      dalam <b>Claude, Gemini</b>, mana-mana AI yang kamu dah ada. Arahan lengkap sudah ada di dalam,
+      jadi cukup hantar sahaja. Ini guna langganan kamu sendiri — tiada kos tambahan untuk app ni.
+    </p>
+    <textarea id="deepTxt" rows="9" readonly style="font-size:12px;line-height:1.45"></textarea>
+    <div class="rep-actions">
+      <button id="dpGPT">🤖<br>ChatGPT</button>
+      <button id="dpCopy">📋<br>Salin</button>
+      <button id="dpMail">✉️<br>Email</button>
+      <button id="dpShare">📤<br>Kongsi</button>
+      <button id="dpFile">💾<br>Fail</button>
+    </div>
+    <div class="note">Panjang pakej: ${txt.length.toLocaleString()} aksara.</div>
+    <button class="btn ghost" id="sheetClose">Tutup</button>`);
+  document.getElementById('deepTxt').value = txt;
+  const subj = `Analisa mendalam — log ${U()} (14 hari)`;
+  document.getElementById('dpGPT').onclick = async ()=>{
+    await copyText(txt);
+    // Pakej ni boleh jadi panjang. Kalau muat, isi terus dalam ruang taip ChatGPT;
+    // kalau tak, buka kosong — teks dah ada dalam clipboard untuk ditampal.
+    const q = encodeURIComponent(txt);
+    const url = q.length < 5500 ? ('https://chatgpt.com/?q=' + q) : 'https://chatgpt.com/';
+    toast('✓ Pakej disalin — ChatGPT dibuka');
+    setTimeout(()=> window.open(url, '_blank', 'noopener'), 250);
+  };
+  document.getElementById('dpCopy').onclick = async ()=>{ await copyText(txt); toast('✓ Pakej penuh disalin — tampal dalam AI kamu'); };
+  document.getElementById('dpMail').onclick = ()=> sendMail(subj, txt);
+  document.getElementById('dpShare').onclick = ()=> shareText(subj, txt);
+  document.getElementById('dpFile').onclick = ()=> saveText(`bobdyno-analisa-${today()}.txt`, txt);
+}
+window.openDeep = openDeep;
+
+/* mailto ada had panjang alamat (~2000 aksara ikut app).
+   Kalau report panjang: salin penuh ke clipboard dulu, emel bawa ringkasan + arahan tampal. */
+const MAIL_SAFE = 1500;
+async function sendMail(subj, body){
+  if(body.length <= MAIL_SAFE){
+    location.href = 'mailto:?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);
+    return;
+  }
+  await copyText(body);
+  const head = body.slice(0, MAIL_SAFE - 220);
+  const note = '\n\n— — —\n[Report penuh dah disalin ke clipboard. Tekan lama dalam badan emel ini '
+             + 'dan pilih Tampal untuk masukkan versi penuh, kemudian padam mesej ini.]';
+  toast('Report penuh disalin — tampal dalam emel');
+  location.href = 'mailto:?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(head+note);
+}
+
+async function shareText(subj, body){
+  if(navigator.share){
+    try{ await navigator.share({title:subj, text:body}); return; }catch(e){ if(e.name==='AbortError') return; }
+  }
+  await copyText(body);
+  toast('Peranti tak sokong kongsi — teks penuh disalin');
+}
+
+function saveText(nama, teks){
+  try{
+    const blob = new Blob([teks], {type:'text/plain;charset=utf-8'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = nama;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+    toast('✓ Fail disimpan: '+nama);
+  }catch(e){ toast('Gagal simpan fail'); }
+}
+
+async function copyText(t){
+  try{ await navigator.clipboard.writeText(t); }
+  catch(e){
+    const ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');}catch(_){}
+    document.body.removeChild(ta);
+  }
+}
+
+function esc(t){ const d=document.createElement('div'); d.textContent=t==null?'':String(t); return d.innerHTML; }
+
+const sheet = document.getElementById('sheet');
+function openSheet(html){
+  document.getElementById('sheetBox').innerHTML = html;
+  sheet.classList.add('show');
+  const close = ()=> sheet.classList.remove('show');
+  document.getElementById('sheetX')?.addEventListener('click', close);
+  document.getElementById('sheetClose')?.addEventListener('click', close);
+  document.getElementById('retryAI')?.addEventListener('click', ()=> genReport(curRep?.date));
+  bindReportActions();
+}
+sheet.addEventListener('click', e=>{ if(e.target===sheet && sheet.dataset.locked!=='1') sheet.classList.remove('show'); });
+
+async function genReport(date, silent){
+  date ||= today();
+  if(!silent) openSheet(`<div style="padding:44px 0;text-align:center">
+      <div class="spin" style="font-size:26px">✨</div>
+      <div class="note" style="margin-top:12px">Bob Dyno sedang menilai hari ${U()}…</div></div>`);
+  let rep, warn = '';
+  try{
+    rep = await serverReport(date);            // laluan utama — pengguna tak perlu key
+  }catch(eFirst){
+  try{
+    // timeout selalunya sementara — cuba sekali lagi sebelum menyerah
+    if(/504|502|terlalu lama|timeout/i.test(String(eFirst.message))){
+      if(!silent) openSheet(`<div style="padding:44px 0;text-align:center">
+        <div class="spin" style="font-size:26px">✨</div>
+        <div class="note" style="margin-top:12px">Percubaan pertama terlalu lama. Mencuba sekali lagi…</div></div>`);
+      rep = await serverReport(date);
+    } else { throw eFirst; }
+  }catch(e1){
+    try{
+      rep = await aiReport(date);              // key sendiri (kalau ada)
+    }catch(e2){
+      rep = localReport(date);                 // sandaran terakhir
+      warn = String(e2.message).includes('no-key') ? String(e1.message) : String(e2.message);
+    }
+  }
+  }
+  rep.warn = warn ? warn.slice(0,120) : '';
+  rep.reply = db.reports[date]?.reply || '';
+  rep.stale = false;
+  db.reports[date] = rep; save();
+  renderRepCard(); renderHistory();
+  showReport(rep);
+}
+
+function renderRepCard(){
+  const vd = (typeof pickedDate === 'function') ? pickedDate() : today();
+  const rep = db.reports[vd];
+  const box = document.getElementById('repPreview');
+  const hasEntry = db.entries.some(e=>e.date===vd);
+  if(rep){
+    box.innerHTML = `<div class="rep-card-stars">${starStr(rep.stars)} <span style="font-size:13px;color:var(--muted);font-weight:600">${(+rep.stars).toFixed(1)}/5</span></div>
+      <div style="font-size:13.5px;color:var(--text-secondary);margin-top:6px;line-height:1.5">${esc(rep.verdict).slice(0,190)}…</div>
+      <button class="btn ghost" style="margin-top:10px" onclick="showReport(db.reports[pickedDate()])">Baca report penuh</button>`;
+    document.getElementById('genBtn').textContent = rep.stale ? '🔄 Jana semula (rekod dah berubah)' : '🔄 Jana semula report';
+    if(rep.stale) document.getElementById('genBtn').style.background = 'var(--s2)';
+    else document.getElementById('genBtn').style.background = '';
+  } else {
+    box.innerHTML = `<div class="empty">${hasEntry
+      ? 'Belum dijana. AI akan nilai kualiti & kedalaman hari ni, bagi bintang, dan cadang penambahbaikan.'
+      : 'Rekod dulu sekurang-kurangnya satu aktiviti, baru report bermakna.'}</div>`;
+    document.getElementById('genBtn').textContent = vd===today()
+      ? '✨ Jana report malam ini' : `✨ Jana report ${relLabel(vd)}`;
+  }
+  document.getElementById('repHint').textContent =
+    'Saranan ditulis oleh Bob Dyno AI. Perlu internet — kalau talian putus, enjin sandaran ambil alih sementara.';
+}
+document.getElementById('genBtn').onclick = ()=> genReport(pickedDate());
+
+/* ═══════════ CATATAN SUNYI ═══════════════════════════════════
+   Rekod kebaikan peribadi. Tiada markah, tiada streak, tiada sasaran.
+   Kalau nanti ada sesiapa cadang tambah lencana atau "hari berturut-turut"
+   di sini — itu akan mengubah apps ni jadi pertandingan. Jangan. */
+
+const JB_KAT = {
+  pemurah:'Pemurah', keluarga:'Keluarga', belas:'Belas Kasihan',
+  masa:'Masa & Perhatian', wang:'Pemberian Wang', maaf:'Memaafkan',
+  bantu:'Membantu Orang', komuniti:'Komuniti', alam:'Menjaga Alam & Kebersihan', diri:'Membaiki Diri'
+};
+
+/* Pengelasan simpanan bila server tak dapat dihubungi.
+   Kasar, tapi lebih baik daripada catatan hilang kategori terus. */
+const JB_KATA = {
+  wang:['sedekah','derma','belanja','bayar','duit','rm','ringgit','tabung','zakat','infak'],
+  keluarga:['mak','ibu','ayah','abah','bapa','anak','isteri','suami','adik','abang','kakak','nenek','atuk','keluarga'],
+  masa:['temankan','luangkan','borak','sembang','dengar','jenguk','ziarah','melawat','masa','telefon','call'],
+  maaf:['maaf','maafkan','halalkan','lepaskan','tak berdendam'],
+  bantu:['tolong','bantu','hantar','angkat','baiki','repair','ajar','tunjuk'],
+  belas:['kasihan','simpati','hibur','pujuk','peluk','tenangkan'],
+  komuniti:['masjid','surau','gotong','komuniti','jiran','kariah','sukarela'],
+  diri:['solat','baca','belajar','bersenam','tinggalkan','berhenti','istighfar','doa'],
+  alam:['sampah','kutip','bersih','cuci','sapu','buang','tanam','pokok','kucing','haiwan','alih','laman'],
+  pemurah:['beri','bagi','hadiah','belanja','kongsi']
+};
+function jbTeka(t){
+  const l=(t||'').toLowerCase(); const k=[];
+  for(const id in JB_KATA) if(JB_KATA[id].some(w=>l.includes(w))) k.push(id);
+  return k.length? k.slice(0,3) : ['bantu'];
+}
+
+
+/* Cadangan kebaikan kecil.
+   Sengaja: hanya SATU daripada senarai ni melibatkan wang.
+   Kalau apps ni buat orang rasa kebaikan mesti berharga,
+   ia akan menyekat orang yang paling tiada wang — sedangkan
+   merekalah yang paling banyak boleh beri dalam bentuk lain. */
+const JB_IDEA = [
+  'Kutip sampah yang bukan sampah saya',
+  'Alihkan dahan atau batu dari jalan',
+  'Bersihkan laman masjid atau surau',
+  'Beri laluan kepada kereta lain',
+  'Ucap terima kasih kepada pekerja kedai',
+  'Dengar seseorang bercakap sampai habis',
+  'Telefon orang tua saya',
+  'Beri makan kucing jalanan',
+  'Tahan diri daripada membalas kata kasar',
+  'Puji seseorang di depan orang lain',
+  'Doakan seseorang tanpa dia tahu',
+  'Maafkan orang yang tak minta maaf',
+  'Luangkan masa dengan anak tanpa telefon',
+  'Tolong angkat barang orang',
+  'Sedekah walau sedikit'
+];
+function jbIdeaRender(){
+  const w=document.getElementById('jbIdea'); if(!w) return;
+  w.innerHTML=JB_IDEA.map(t=>`<button type="button" data-t="${t.replace(/"/g,'&quot;')}">${esc2(t)}</button>`).join('');
+  w.onclick=e=>{ const b=e.target.closest('button'); if(!b) return;
+    const inp=document.getElementById('jbInput');
+    inp.value=b.dataset.t; inp.focus();
+    inp.setSelectionRange(inp.value.length, inp.value.length); };
+}
+
+function jbList(){ db.baik ??= []; return db.baik; }
+function jbHari(d){ return jbList().filter(x=>x.date===d); }
+
+async function jbSimpan(){
+  const el=document.getElementById('jbInput');
+  const teks=el.value.trim();
+  if(!teks){ toast('Tulis dulu apa yang kamu buat'); el.focus(); return; }
+  const btn=document.getElementById('jbSave'), note=document.getElementById('jbNote');
+  btn.disabled=true; btn.textContent='Menyimpan…';
+  note.textContent='Sedang membaca catatan kamu…';
+
+  const rekod={ id:Date.now()+'-'+Math.random().toString(36).slice(2,7),
+                date:today(), teks, kat:[], kepada:'', pantulan:'', ts:Date.now() };
+  try{
+    const r=await fetch('/api/baik',{method:'POST',headers:{'content-type':'application/json','x-bob-peranti':peranti()},
+      body:JSON.stringify({mod:'catat',teks})});
+    const ct=r.headers.get('content-type')||'';
+    if(!ct.includes('json')) throw new Error('server');
+    const j=await r.json();
+    if(!r.ok) throw new Error(j.error||'server');
+    rekod.kat=j.kategori||[]; rekod.kepada=j.kepada||''; rekod.pantulan=j.pantulan||'';
+    note.textContent='Tulis biasa-biasa sahaja. Tak perlu ayat cantik.';
+  }catch(e){
+    rekod.kat=jbTeka(teks); rekod.luar=1;
+    note.textContent='Disimpan. AI tak dapat dihubungi, jadi kategori ditetapkan secara kasar dulu.';
+  }
+  jbList().unshift(rekod); save(); kira('sunyi_catat');
+  el.value=''; btn.disabled=false; btn.textContent='Catat kebaikan ni';
+  jbRender(); toast('✓ Dicatat');
+}
+
+function jbPadam(id){
+  db.baik = jbList().filter(x=>x.id!==id); save(); jbRender(); toast('Catatan dipadam');
+}
+window.jbPadam=jbPadam;
+
+function jbKiraKat(hari){
+  const had=Date.now()-hari*864e5, k={};
+  jbList().filter(x=>x.ts>=had).forEach(x=>(x.kat||[]).forEach(c=>k[c]=(k[c]||0)+1));
+  return k;
+}
+function jbJum(hari){ const had=Date.now()-hari*864e5; return jbList().filter(x=>x.ts>=had).length; }
+
+
+/* Guru Borhan: jangan impikan jadi manusia BERJAYA — impikan jadi manusia BERGUNA.
+   Berjaya itu terkumpul dan tak pernah cukup. Berguna itu lengkap setiap kali.
+   Sebab tu paparan ni tunjuk SIAPA yang tersentuh, bukan berapa markah dikumpul. */
+function jbKepada(hari){
+  const had=Date.now()-hari*864e5, k={};
+  jbList().filter(x=>x.ts>=had && x.kepada).forEach(x=>{
+    const t=x.kepada.trim().toLowerCase(); if(t) k[t]=(k[t]||0)+1; });
+  return k;
+}
+function jbKepadaHTML(k){
+  const isi=Object.entries(k).sort((a,b)=>b[1]-a[1]);
+  if(!isi.length) return '';
+  return `<div class="jb-kepada"><div class="k">Yang tersentuh</div>
+    <div class="jb-tag">${isi.map(([t,n])=>
+      `<i>${esc2(t)}${n>1?` · ${n}`:''}</i>`).join('')}</div></div>`;
+}
+
+function jbBar(k){
+  const isi=Object.entries(k).sort((a,b)=>b[1]-a[1]);
+  if(!isi.length) return '';
+  const mak=isi[0][1];
+  return `<div class="jb-bar">${isi.map(([id,n])=>
+    `<div class="r"><span>${esc2(JB_KAT[id]||id)}</span>
+     <u style="width:${Math.round(n/mak*100)}%"></u><b>${n}</b></div>`).join('')}</div>`;
+}
+function esc2(t){const d=document.createElement('div');d.textContent=t==null?'':String(t);return d.innerHTML;}
+
+function jbRender(){
+  const hariIni=jbHari(today());
+  const box=document.getElementById('jbHariIni');
+  if(!box) return;
+
+  box.innerHTML = hariIni.length
+    ? `<div class="jb-kira"><b>Hari ini kamu catat ${hariIni.length}</b>
+         <span>${hariIni.length===1?'satu perkara':'perkara'}</span></div>` +
+      hariIni.map(jbKad).join('')
+    : `<div class="jb-kosong">Belum ada catatan hari ini.<br>
+       Kebaikan tak semestinya melibatkan wang — kutip sampah di jalan, beri laluan,
+       dengar seseorang sampai habis, ucap terima kasih kepada orang yang selalu terlepas pandang.</div>`;
+
+  jbIdeaRender();
+  jbMingguKad();
+  const j7=jbJum(7), j30=jbJum(30), k7=jbKiraKat(7);
+  const c=document.getElementById('jbCorak');
+  c.innerHTML = jbList().length<3 ? '' : `
+    <div class="card">
+      <div class="jb-head"><h3>Corak kamu</h3>
+        <button class="btn ghost" id="jbRefl" style="width:auto;padding:8px 14px;font-size:13px">Minta refleksi</button></div>
+      <p class="note">7 hari lepas: ${j7} catatan · 30 hari lepas: ${j30} catatan</p>
+      ${jbKepadaHTML(jbKepada(30))}
+      ${jbBar(k7)}
+      <div id="jbReflOut"></div>
+    </div>`;
+  document.getElementById('jbRefl')?.addEventListener('click', jbRefleksi);
+
+  const lain=jbList().filter(x=>x.date!==today()).slice(0,30);
+  document.getElementById('jbSejarah').innerHTML = lain.length
+    ? `<div class="jb-kira"><b>Sebelum ni</b><span>${lain.length} catatan terakhir</span></div>`
+      + lain.map(jbKad).join('') : '';
+}
+
+
+function jbTagHTML(x){
+  const kat=(x.kat||[]);
+  const nama=kat.map(c=>JB_KAT[c]||c);
+  // "kepada" hanya ditunjuk kalau ia bukan pengulangan kategori
+  const kep=(x.kepada||'').trim();
+  const ulang = nama.some(n=>n.toLowerCase()===kep.toLowerCase());
+  const semua=[...nama, (kep && !ulang)?kep:null].filter(Boolean);
+  if(!semua.length) return '';
+  return `<div class="jb-tag">${semua.map(t=>`<i>${esc2(t)}</i>`).join('')}</div>`;
+}
+
+
+/* ═══ REFLEKSI MINGGUAN ═══════════════════════════════════
+   Hangat sepenuh hati — tetapi kehangatan itu ditumpahkan kepada
+   MANUSIA yang menerima kebaikannya, bukan kepada jumlah rekodnya.
+   Sebaik ia memuji jumlah, apps ni jadi permainan mengumpul markah. */
+function jbMingguData(){
+  const had=Date.now()-7*864e5;
+  const isi=jbList().filter(x=>x.ts>=had);
+  return { jumlah_catatan:isi.length, kategori:jbKiraKat(7), penerima:jbKepada(7),
+           catatan:isi.map(x=>({teks:x.teks, kepada:x.kepada||'', kategori:x.kat||[]})) };
+}
+
+function jbMingguKad(){
+  const box=document.getElementById('jbMinggu'); if(!box) return;
+  const n=jbJum(7);
+  const r=db.baikMinggu;
+  if(n<2 && !r){ box.innerHTML=''; return; }
+  box.innerHTML=`
+    <div class="card" id="jbMKad">
+      <div class="jb-head"><h3>Refleksi mingguan</h3>
+        <button class="btn ghost" id="jbMGo" style="width:auto;padding:8px 14px;font-size:13px">
+          ${r?'Jana semula':'Jana refleksi'}</button></div>
+      <div id="jbMOut">${r?jbMingguHTML(r):'<p class="note">Tujuh hari catatan kamu, ditulis semula sebagai satu surat pendek.</p>'}</div>
+    </div>`;
+  document.getElementById('jbMGo').onclick=jbMinggu;
+  if(r) jbMAksi();
+}
+
+function jbMingguHTML(r){
+  return `<div id="jbCetak">
+    <div class="jbm-tajuk">${esc2(r.tajuk)}</div>
+    <p class="jbm-buka">${esc2(r.pembuka)}</p>
+    ${(r.sorotan||[]).map(x=>`<div class="jbm-sor">
+       <div class="a">${esc2(x.apa)}</div><div class="k">${esc2(x.kesan)}</div></div>`).join('')}
+    ${r.corak?`<p class="jbm-corak">${esc2(r.corak)}</p>`:''}
+    ${r.penutup?`<p class="jbm-tutup">${esc2(r.penutup)}</p>`:''}
+    <p class="jbm-kaki">Catatan Sunyi · ${esc2(pretty(today()))} · bobdyno.my</p>
+  </div>
+  <div class="rep-actions" style="margin-top:14px">
+    <button id="jbmPdf">🖨️<br>PDF</button>
+    <button id="jbmMail">✉️<br>Email</button>
+    <button id="jbmCopy">📋<br>Salin</button>
+    <button id="jbmShare">📤<br>Kongsi</button>
+  </div>`;
+}
+
+function jbMTeks(r){
+  return [ r.tajuk, '',
+    r.pembuka, '',
+    ...(r.sorotan||[]).flatMap(x=>['• '+x.apa, '  '+x.kesan]),
+    '', r.corak||'', '', r.penutup||'',
+    '', 'Catatan Sunyi · '+pretty(today())+' · bobdyno.my' ].filter(x=>x!==undefined).join('\n');
+}
+
+function jbMAksi(){
+  const r=db.baikMinggu; if(!r) return;
+  const subj='Refleksi mingguan — Catatan Sunyi ('+pretty(today())+')';
+  document.getElementById('jbmPdf')?.addEventListener('click', ()=>{
+    document.body.classList.add('cetak-sunyi');
+    setTimeout(()=>{ window.print();
+      setTimeout(()=>document.body.classList.remove('cetak-sunyi'), 600); }, 60);
+  });
+  document.getElementById('jbmMail')?.addEventListener('click', ()=> sendMail(subj, jbMTeks(r)));
+  document.getElementById('jbmCopy')?.addEventListener('click', async ()=>{
+    await copyText(jbMTeks(r)); toast('✓ Refleksi disalin'); });
+  document.getElementById('jbmShare')?.addEventListener('click', ()=> shareText(subj, jbMTeks(r)));
+}
+
+async function jbMinggu(){
+  const out=document.getElementById('jbMOut');
+  out.innerHTML='<p class="note">Sedang membaca minggu kamu…</p>';
+  try{
+    const res=await fetch('/api/baik',{method:'POST',
+      headers:{'content-type':'application/json','x-bob-peranti':peranti()},
+      body:JSON.stringify({mod:'mingguan',latar:jbMingguData(),nama:(db.settings?.name||'')})});
+    const j=await res.json();
+    if(!res.ok) throw new Error(j.error||'Ralat');
+    db.baikMinggu=j; db.baikMingguTarikh=today(); save(); kira('sunyi_minggu');
+    out.innerHTML=jbMingguHTML(j); jbMAksi();
+  }catch(e){
+    out.innerHTML=`<p class="note">Tak dapat jana refleksi: ${esc2(e.message)}. Catatan kamu selamat.</p>`;
+  }
+}
+
+
+/* Sejarah Catatan Sunyi — dikumpul ikut hari.
+   Sengaja TIADA jumlah besar di atas dan TIADA streak: senarai ini
+   untuk diimbas kembali, bukan untuk dikejar. */
+function sunyiHistori(){
+  const el=document.getElementById('sunyiHist'); if(!el) return;
+  const isi=jbList();
+  if(!isi.length){
+    el.innerHTML='<p class="note">Belum ada catatan. Bila kamu mula mencatat, ia akan berkumpul di sini ikut hari.</p>';
+    return;
+  }
+  const hari={};
+  isi.forEach(x=>{ (hari[x.date] ??= []).push(x); });
+  const tarikh=Object.keys(hari).sort().reverse().slice(0,60);
+  el.innerHTML = tarikh.map(d=>`
+    <div class="sh-hari">
+      <div class="sh-tarikh">${esc2(pretty(d))}${d===today()?' · hari ini':''}</div>
+      ${hari[d].map(x=>`<div class="sh-baris">
+        <span class="t">${esc2(x.teks)}</span>
+        ${(x.kat||[]).length?`<span class="k">${esc2((x.kat||[]).map(c=>JB_KAT[c]||c).join(' · '))}</span>`:''}
+      </div>`).join('')}
+    </div>`).join('');
+}
+
+function jbKad(x){
+  return `<div class="jb-item">
+    <div class="jb-head"><div class="t">${esc2(x.teks)}</div>
+      <button class="jb-del" onclick="jbPadam('${x.id}')" aria-label="Padam">✕</button></div>
+    ${jbTagHTML(x)}
+    ${x.pantulan?`<p class="jb-pant">${esc2(x.pantulan)}</p>`:''}
+    ${x.date!==today()?`<p class="note" style="margin-top:8px">${esc2(x.date)}</p>`:''}
+  </div>`;
+}
+
+async function jbRefleksi(){
+  const out=document.getElementById('jbReflOut');
+  out.innerHTML='<p class="note">Sedang membaca corak kamu…</p>';
+  const latar={
+    jumlah_semua:jbList().length,
+    tujuh_hari:jbJum(7), tiga_puluh_hari:jbJum(30),
+    kategori_7hari:jbKiraKat(7), kategori_30hari:jbKiraKat(30),
+    contoh_terkini:jbList().slice(0,8).map(x=>x.teks)
+  };
+  try{
+    const r=await fetch('/api/baik',{method:'POST',headers:{'content-type':'application/json','x-bob-peranti':peranti()},
+      body:JSON.stringify({mod:'refleksi',latar,nama:(db.settings?.name||'')})});
+    const j=await r.json();
+    if(!r.ok) throw new Error(j.error||'Ralat');
+    out.innerHTML=`
+      ${j.berguna?`<div class="jb-guna">${esc2(j.berguna)}</div>`:''}
+      <div class="jb-pant" style="font-style:normal;margin-top:14px">
+      <p style="margin:0 0 9px">${esc2(j.nampak)}</p>
+      ${j.jarang?`<p style="margin:0 0 9px"><b>Jarang muncul:</b> ${esc2(j.jarang)}</p>`:''}
+      ${j.cuba?`<p style="margin:0"><b>Boleh cuba:</b> ${esc2(j.cuba)}</p>`:''}</div>`;
+  }catch(e){
+    out.innerHTML=`<p class="note" style="margin-top:12px">Tak dapat ambil refleksi: ${esc2(e.message)}. Catatan kamu selamat.</p>`;
+  }
+}
+
+document.getElementById('jbSave')?.addEventListener('click', jbSimpan);
+
+
+/* ═══════════ PASANG KE SKRIN UTAMA ═══════════════════════ */
+const DALAM_APP = /FBAN|FBAV|FB_IAB|FBIOS|Instagram|Barcelona|Line\/|BytedanceWebview|musical_ly|Twitter/i
+  .test(navigator.userAgent||'');
+const DAH_PASANG = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+let tungguPasang = null;
+
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); tungguPasang = e; jalurPasang(); });
+window.addEventListener('appinstalled', () => { tungguPasang=null; document.getElementById('pasangBar').hidden=true;
+  try{ localStorage.setItem('bob.pasang','sudah'); }catch(e){} });
+
+function jalurPasang(){
+  const bar=document.getElementById('pasangBar'); if(!bar) return;
+  if(DAH_PASANG) return;
+  try{ if(localStorage.getItem('bob.pasangTutup')==='1') return; }catch(e){}
+  const t=document.getElementById('pasangT'), b=document.getElementById('pasangB');
+
+  if(DALAM_APP){
+    // Facebook/Instagram: pemasangan memang mustahil di sini. Jangan tipu.
+    t.innerHTML='<b>Kamu buka dari Facebook.</b><br>Pelayar Facebook tak boleh pasang app ke skrin utama. '+
+      'Buka dalam Chrome dulu — tekan <b>⋮</b> di penjuru atas, pilih <b>Buka dalam pelayar</b>.';
+    b.innerHTML='<button class="utama" id="pasangSalin">Salin pautan</button>';
+    document.getElementById('pasangSalin').onclick=async()=>{
+      await copyText(location.href.split('?')[0]);
+      toast('✓ Pautan disalin — buka Chrome, tampal di bar alamat');
+    };
+    bar.hidden=false; return;
+  }
+
+  if(tungguPasang){
+    t.innerHTML='<b>Pasang Bob ke skrin utama</b><br>Supaya ia buka macam app biasa, dan peringatan malam boleh sampai.';
+    b.innerHTML='<button class="utama" id="pasangGo">Pasang sekarang</button>';
+    document.getElementById('pasangGo').onclick=async()=>{
+      const e=tungguPasang; tungguPasang=null; bar.hidden=true;
+      e.prompt(); await e.userChoice;
+    };
+    bar.hidden=false; return;
+  }
+
+  // iPhone: Safari tiada beforeinstallprompt — arahan manual sahaja
+  if(/iPhone|iPad|iPod/i.test(navigator.userAgent) && !DALAM_APP){
+    t.innerHTML='<b>Pasang Bob ke skrin utama</b><br>Tekan butang <b>Kongsi</b> di bawah, pilih <b>Add to Home Screen</b>.';
+    b.innerHTML='';
+    bar.hidden=false;
+  }
+}
+document.getElementById('pasangX')?.addEventListener('click', ()=>{
+  document.getElementById('pasangBar').hidden=true;
+  try{ localStorage.setItem('bob.pasangTutup','1'); }catch(e){}
+});
+setTimeout(jalurPasang, 1200);
+kira('buka_app');
+
+/* Pautan terus ke satu tab: bobdyno.my/sunyi  atau  ?tab=baik  atau  #sunyi
+   Berguna untuk perkongsian di media sosial dan untuk pautan dari quiz. */
+(function(){
+  const q=new URLSearchParams(location.search).get('tab');
+  const h=(location.hash||'').replace('#','');
+  const peta={sunyi:'baik', baik:'baik', 'hari-ini':'today', today:'today',
+              progress:'progress', rekod:'data', data:'data'};
+  const v=peta[q]||peta[h];
+  if(!v) return;
+  document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-pressed', x.dataset.v===v));
+  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('active', s.id==='v-'+v));
+})();
+
+
+window.openSheet = openSheet; window.repHTML = repHTML; window.db = db; window.today = today;
+window.showReport = showReport;
+window.pickedDate = pickedDate;
+
+/* ── Tetapan ── */
+const selHour = document.getElementById('setHour');
+for(let h=17; h<=23; h++) selHour.insertAdjacentHTML('beforeend', `<option value="${h}">${h}:00</option>`);
+function syncSettings(){
+  document.getElementById('setName').value = db.settings.name||'';
+  selHour.value = db.settings.hour;
+  document.getElementById('setAuto').value = db.settings.auto?'1':'0';
+  document.getElementById('setKey').value = db.settings.key||'';
+  const sm = document.getElementById('setModel');
+  if(db.settings.model && ![...sm.options].some(o=>o.value===db.settings.model))
+    sm.insertAdjacentHTML('beforeend', `<option value="${db.settings.model}">${db.settings.model}</option>`);
+  sm.value = db.settings.model||'';
+}
+selHour.onchange = ()=>{ db.settings.hour = +selHour.value; save(); };
+document.getElementById('setName').oninput = e=>{
+  db.settings.name = e.target.value.slice(0,24); save(); paintName(); renderToday();
+};
+document.getElementById('setAuto').onchange = e=>{ db.settings.auto = e.target.value==='1'; save(); };
+document.getElementById('setModel').onchange = e=>{ db.settings.model = e.target.value; save(); renderRepCard(); };
+document.getElementById('saveKey').onclick = async ()=>{
+  db.settings.key = document.getElementById('setKey').value.trim(); save();
+  if(db.settings.key) await loadModels(); else { db.settings.model=''; save(); }
+  renderRepCard(); toast('✓ Tetapan disimpan');
+};
+async function loadModels(){
+  const st = document.getElementById('keyStatus');
+  st.textContent = 'Menyemak key…';
+  try{
+    const r = await fetch('https://api.openai.com/v1/models', {
+      headers:{ authorization:'Bearer '+db.settings.key }});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const j = await r.json();
+    const ids = (j.data||[]).map(m=>m.id).filter(id=>/^(gpt|o\d)/i.test(id)).sort();
+    const sm = document.getElementById('setModel');
+    sm.innerHTML = '<option value="">(auto)</option>' + ids.map(id=>`<option value="${id}">${id}</option>`).join('');
+    if(!db.settings.model && ids.length){
+      db.settings.model = ids.find(x=>x.includes('luna')) || ids.find(x=>x.includes('mini')) || ids[0]; save();
+    }
+    sm.value = db.settings.model||'';
+    st.textContent = `✓ Key OpenAI sah. ${ids.length} model tersedia. Dipilih: ${db.settings.model||'-'}`;
+  }catch(e){
+    st.textContent = '✕ Key tak berjaya disahkan ('+e.message+'). App akan terus guna enjin offline.';
+  }
+}
+document.getElementById('testKey').onclick = ()=>{ if(db.settings.key) loadModels(); else toast('Isi API key dulu'); };
+document.getElementById('pingBtn').onclick = async ()=>{
+  const st = document.getElementById('srvStatus');
+  st.textContent = 'Menyemak server…';
+  try{
+    // 1) diagnosis: fungsi hidup? key ada?
+    const g = await fetch('/api/coach', {method:'GET'});
+    const gct = g.headers.get('content-type')||'';
+    if(!gct.includes('json')){ st.textContent = '✕ '+netlifyBlock(g, gct); return; }
+    const d = await g.json();
+    if(!d.key_ada){
+      st.textContent = `✕ Fungsi hidup (versi ${d.versi}) tapi ${d.env_dijangka} TIADA.`
+        + (d.env_lama_anthropic_masih_ada ? ' Yang ada cuma ANTHROPIC_API_KEY — tukar namanya kepada OPENAI_API_KEY.' : '')
+        + ' Tambah di Netlify → Environment variables (Scope: Functions), kemudian Clear cache and deploy site.';
+      return;
+    }
+    let diag = `Fungsi ${d.versi} · key ${d.key_panjang} aksara`
+      + (d.key_bermula_sk ? '' : ' · ⚠ tidak bermula "sk-"')
+      + (d.key_ada_ruang_kosong ? ' · ⚠ ADA RUANG KOSONG' : '');
+
+    // 2) ujian sebenar
+    const r = await fetch('/api/coach', {method:'POST', headers:{'content-type':'application/json','x-bob-peranti':peranti()},
+      body: JSON.stringify({payload:{nama:U(), tarikh:'ujian',
+        aktiviti:[{kategori:'Ilmu Baru',tajuk:'Ujian sambungan',nota:'semak server'}],
+        refleksi:{}, skor_enjin:{jumlah:50}}})});
+    const ct = r.headers.get('content-type')||'';
+    if(!ct.includes('json')){ st.textContent = '✕ '+netlifyBlock(r, ct); return; }
+    const j = await r.json().catch(()=>({}));
+    st.textContent = r.ok ? `✓ Server AI hidup — model ${j.model||'auto'}. (${diag})`
+                          : `✕ ${j.error || ('Server '+r.status)}  —  ${diag}`;
+  }catch(e){ st.textContent = '✕ Tak dapat hubungi server: '+e.message; }
+};
+document.getElementById('notifBtn').onclick = async ()=>{
+  if(!('Notification' in window)) return toast('Peranti ini tak sokong notifikasi');
+  const perm = await Notification.requestPermission();
+  if(perm !== 'granted'){ toast('Peringatan tidak dibenarkan'); return; }
+  scheduleReminder();
+  await mirrorState().catch(()=>{});
+  const latar = await dayaPeringatanLatar();
+  toast(latar ? '✓ Peringatan aktif — termasuk bila app ditutup'
+              : '✓ Peringatan aktif (bila app dibuka)');
+  const s = document.getElementById('notifNote');
+  if(s) s.textContent = latar
+    ? 'Peringatan latar aktif. Bob Dyno boleh tegur walaupun app ditutup.'
+    : 'Peranti ni hanya benarkan peringatan semasa app dibuka. Set juga alarm telefon pada jam yang sama sebagai sandaran.';
+};
+/* Berapa hari sejak rekod terakhir */
+function jurangHari(){
+  const days = [...new Set(db.entries.map(e=>e.date))].sort();
+  if(!days.length) return 99;
+  const last = days[days.length-1];
+  let n = 0, d = today();
+  while(d > last && n < 99){ d = shift(d,-1); n++; }
+  return n;
+}
+
+/* Mesej berperingkat — makin lama senyap, makin terus terang.
+   Ayat 13:11 muncul apabila diam dah beberapa hari: bukan untuk menghukum,
+   tetapi untuk mengingatkan gerakan itu datang dari dia dahulu. */
+function mesejPeringatan(){
+  const gap = jurangHari(), n = U();
+  const janji = (db.memory?.janji||[]).filter(j=>j.status==='terbuka').slice(-1)[0];
+  if(gap === 0)
+    return {t:'Bob Dyno — masa refleksi',
+            b:'Rekod dah ada. Jana report malam dan tengok penilaian hari ni.'};
+  if(gap === 1)
+    return {t:`Satu baris je, ${n}`,
+            b: janji ? `Janji kamu masih terbuka: "${janji.teks}". Catat apa yang berlaku hari ni.`
+                     : 'Hari ni belum ada catatan. Satu perkara kecil pun dikira.'};
+  if(gap <= 3)
+    return {t:`${gap} hari senyap`,
+            b:`${AYAT_SAUH.ms} — ${AYAT_SAUH.ref}\nSatu baris malam ni sudah dikira sebagai gerak.`};
+  if(gap <= 7)
+    return {t:`Seminggu tanpa catatan, ${n}`,
+            b:`${AYAT_SAUH.ms} — ${AYAT_SAUH.ref}\nKamu tak perlu ganti hari yang hilang. Mula dari malam ni sahaja.`};
+  return {t:`Pintu ni masih terbuka, ${n}`,
+          b:`${AYAT_SAUH.ms} — ${AYAT_SAUH.ref}\nTiada siapa kira berapa lama kamu hilang. Catat satu perkara.`};
+}
+
+let remT;
+function scheduleReminder(){
+  clearTimeout(remT);
+  if(!('Notification' in window) || Notification.permission!=='granted') return;
+  const now = new Date(), t = new Date();
+  t.setHours(db.settings.hour, 0, 0, 0);
+  if(t <= now) t.setDate(t.getDate()+1);
+  remT = setTimeout(()=>{
+    try{
+      const m = mesejPeringatan();
+      new Notification(m.t, {body:m.b, icon:'icons/icon-192.png', tag:'bobdyno-nightly'});
+    }catch(e){}
+    scheduleReminder();
+  }, t-now);
+}
+scheduleReminder();
+
+/* Peringatan yang boleh berbunyi walaupun app ditutup (Chrome Android, PWA dipasang) */
+async function dayaPeringatanLatar(){
+  try{
+    if(!('serviceWorker' in navigator)) return false;
+    const reg = await navigator.serviceWorker.ready;
+    if(!reg || !('periodicSync' in reg)) return false;
+    const st = await navigator.permissions.query({name:'periodic-background-sync'}).catch(()=>null);
+    if(st && st.state !== 'granted') return false;
+    await reg.periodicSync.register('bob-semak', {minInterval: 12*60*60*1000});
+    return true;
+  }catch(e){ return false; }
+}
+
+/* ── Auto buka report waktu malam ── */
+function askName(){
+  openSheet(`
+    <div class="coach-head">
+      <div class="dyno" style="width:44px;height:44px">${DYNO_SVG}</div>
+      <div><div class="nm">Bob Dyno</div><div class="rl">Build · Inspire · Lead</div></div>
+    </div>
+    <h3 style="margin:6px 0 6px;font-size:18px">Sebelum kita mula…</h3>
+    <p style="font-size:14px;line-height:1.55;color:var(--text-secondary);margin:0 0 14px">
+      ${db.settings.quizApplied ? `Saya dah baca jawapan quiz kamu. Kita mula dari
+      <b>${CAT[db.settings.fokus]?.label || 'satu bahagian'}</b> sahaja — sasaran mingguan
+      sengaja saya set kecil, dan langkah pertama kamu dah tersimpan sebagai janji.
+      <br><br><b>Nak saya panggil kamu apa?</b>`
+      : `Saya coach kamu mulai hari ni. Setiap malam saya akan nilai hari kamu, bagi bintang,
+      dan tunjuk apa yang boleh diperbaiki.<br><br><b>Nak saya panggil kamu apa?</b>`}
+    </p>
+    <input type="text" id="obName" placeholder="Nama panggilan" autocomplete="off" maxlength="24">
+    <button class="btn" id="obGo">Mula</button>
+    ${db.settings.quizApplied ? '' :
+      '<button class="btn ghost" id="obDemo" style="margin-top:8px">Mula + isi 5 rekod contoh</button>'}
+    <div class="note">Nama boleh tukar bila-bila di tab Rekod → Tetapan. Rekod contoh boleh dipadam satu-satu.</div>`);
+  sheet.dataset.locked = '1';
+  const inp = document.getElementById('obName');
+  setTimeout(()=>inp.focus(), 260);
+  const go = (demo)=>{
+    const v = inp.value.trim();
+    if(!v){ inp.focus(); return; }
+    db.settings.name = v.slice(0,24);
+    if(demo===true){
+      const t = today();
+      db.entries = SEED.map((x,i)=>({id:'seed'+i, date:t, ...x}));
+      db.refl[t] = {mood:4, lesson:'Belajar terus praktik — ilmu jadi kemahiran.',
+                    improve:'Tambah satu aktiviti kesihatan & rohani.'};
+    }
+    save();
+    sheet.dataset.locked = '0';
+    sheet.classList.remove('show');
+    paintName(); syncSettings(); renderAll();
+    toast(`✓ Selamat datang, ${v}`);
+    setTimeout(maybeAutoReport, 500);
+  };
+  document.getElementById('obGo').onclick = ()=> go(false);
+  document.getElementById('obDemo')?.addEventListener('click', ()=> go(true));
+  inp.addEventListener('keydown', e=>{ if(e.key==='Enter') go(false); });
+}
+
+function maybeAutoReport(){
+  if(!db.settings.auto) return;
+  if(new Date().getHours() < db.settings.hour) return;
+  if(db.reports[today()]) return;
+  if(!db.entries.some(e=>e.date===today())) return;
+  genReport();
+}
+
+function renderAll(){
+  try{ jbRender(); sunyiHistori(); }catch(e){} renderToday(); chartWeek(); chartCats(); renderTargets(); chartHeat(); renderHistory(); renderRepCard(); renderMemory(); }
+syncSettings();
+syncDateBanner();
+mirrorState().catch(()=>{});
+if('Notification' in window && Notification.permission === 'granted') dayaPeringatanLatar();
+paintName();
+renderAll();
+if(!(db.settings.name||'').trim()) setTimeout(askName, 400);
+else setTimeout(maybeAutoReport, 700);
+
+/* ─────────────  PWA  ───────────── */
+const APP_VERSION = '2026.08.29k';
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  addEventListener('load', ()=> navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+document.getElementById('forceUpd')?.addEventListener('click', async e=>{
+  e.preventDefault();
+  toast('Membersihkan cache…');
+  try{
+    if('serviceWorker' in navigator){
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(r=>r.unregister()));
+    }
+    if(window.caches){ const ks = await caches.keys(); await Promise.all(ks.map(k=>caches.delete(k))); }
+  }catch(err){}
+  setTimeout(()=> location.reload(true), 600);
+});
+</script>
+</body>
+</html>

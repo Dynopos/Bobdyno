@@ -1,0 +1,11 @@
+# Pengunci keselamatan untuk akar repo.
+#
+# Akar repo ini ialah laman pendaratan Nadi (nadi.bobdyno.my, GitHub Pages),
+# bukan app bobdyno.my. App berada dalam app/, dengan netlify.toml sendiri.
+#
+# Projek Netlify "bobdyno" mesti ditetapkan dengan Base directory = app.
+# Jika Base directory dibiarkan kosong, Netlify akan membina akar repo dan
+# menggantikan app dengan laman pendaratan. Baris di bawah membatalkan
+# binaan itu. Binaan dari app/ tidak terjejas.
+[build]
+  ignore = "exit 0"

@@ -1,0 +1,47 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Pautan pendek untuk perkongsian — bobdyno.my/mula lebih senang
+# disebut, ditaip, dan dibaca dalam poster daripada /quiz.html
+[[redirects]]
+  from = "/mula"
+  to = "/quiz.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/quiz"
+  to = "/quiz.html"
+  status = 301
+  force = true
+
+# Pautan terus ke Catatan Sunyi
+[[redirects]]
+  from = "/sunyi"
+  to = "/index.html?tab=baik"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/app"
+  to = "/index.html"
+  status = 301
+  force = true
+
+# Papan angka peribadi — noindex, perlu kunci
+[[redirects]]
+  from = "/stats"
+  to = "/stats.html"
+  status = 301
+  force = true

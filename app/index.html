@@ -407,6 +407,29 @@ nav button[aria-pressed="true"]{color:var(--s1); font-weight:650}
   border:1px solid rgba(27,175,122,.28);
   font-size:15.5px;line-height:1.6;color:var(--text-primary)}
 .jb-kosong{color:var(--text-secondary);font-size:14px;line-height:1.6;padding:16px 2px}
+/* Ilham */
+.il-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.il-kut{font-size:11px;font-weight:700;letter-spacing:.03em;padding:3px 9px;border-radius:99px;
+  border:1px solid var(--c);color:var(--c);background:color-mix(in srgb, var(--c) 10%, transparent)}
+.il-t{white-space:pre-wrap;margin-top:8px}
+.il-langkah{display:flex;align-items:center;gap:10px;margin-top:11px;padding:10px 12px;border-radius:11px;
+  background:var(--plane);border:1px solid var(--border)}
+.il-langkah div{flex:1;font-size:14px;line-height:1.5;min-width:0}
+.il-langkah small{display:block;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:2px}
+.il-langkah .btn{width:auto;flex:none;padding:8px 12px;font-size:13px}
+.il-urus{margin-top:4px}
+.il-lbl{display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin:10px 0 6px}
+.il-pilih{display:flex;flex-wrap:wrap;gap:7px}
+.il-baris{display:flex;gap:8px;align-items:flex-start}
+.il-baris input[type=text]{flex:1;min-width:0;margin-bottom:0}
+.il-baris .btn{width:auto;flex:none;padding:11px 14px;font-size:14px}
+.il-sejarah{margin-top:12px;font-size:13px;color:var(--text-secondary)}
+.il-sejarah ul{margin:6px 0 0;padding-left:4px;list-style:none}
+.il-sejarah li{margin:4px 0;line-height:1.45}
+.il-sejarah i{font-style:normal;color:var(--muted);font-size:12px}
+.il-rehat{margin:16px 2px 8px;padding:14px 16px;border-radius:14px;border:1px dashed var(--axis);
+  color:var(--text-secondary);font-size:14px;line-height:1.6;text-align:center}
 .tagline{font-size:11.5px;color:var(--muted);letter-spacing:0;text-transform:none;font-weight:400;margin-top:2px;line-height:1.25;white-space:nowrap}
 </style>
 </head>
@@ -568,6 +591,23 @@ nav button[aria-pressed="true"]{color:var(--s1); font-weight:650}
   <div id="jbSejarah"></div>
 </section>
 
+<section class="view" id="v-ilham">
+  <div class="jb-hero">
+    <h2>Ada ilham yang terlintas?</h2>
+    <p>Tulis sekarang, sebelum ia hilang. Bisnes, ubah hidup, bantu masyarakat — apa sahaja yang datang ke fikiran kamu.</p>
+  </div>
+
+  <div class="card">
+    <textarea id="ilInput" rows="3" placeholder="Contoh: Buka gerai sarapan depan sekolah, jual nasi lemak RM2."></textarea>
+    <div class="jb-row">
+      <button class="btn" id="ilSave">Simpan ilham ni</button>
+    </div>
+    <p class="note" id="ilNote">Tulis bila ia datang. Draf disimpan sendiri, dan ilham kamu kekal dalam telefon ini sahaja.</p>
+  </div>
+
+  <div id="ilSenarai"></div>
+</section>
+
 <section class="view" id="v-data">
   <div class="card">
     <h2>Sejarah rekod <span class="sub">— history</span></h2>
@@ -654,7 +694,7 @@ nav button[aria-pressed="true"]{color:var(--s1); font-weight:650}
       Data 100% offline di peranti ini. Tiada akaun.<br><br>
       <a href="quiz.html" style="color:var(--s1)">Buat quiz "Kembali Bangun"</a> —
       untuk kawan yang sedang cuba bangun semula.<br><br>
-      <b>Versi app:</b> <span id="appVer">2026.08.29k</span> · <a href="notis-privasi.html" target="_blank">Notis privasi</a> ·
+      <b>Versi app:</b> <span id="appVer">2026.10.07a</span> · <a href="notis-privasi.html" target="_blank">Notis privasi</a> ·
       <a href="#" id="forceUpd" style="color:var(--s1)">Paksa kemas kini</a>
     </p>
   </div>
@@ -666,6 +706,7 @@ nav button[aria-pressed="true"]{color:var(--s1); font-weight:650}
   <button data-v="baik" aria-pressed="true"><span class="ic">🌱</span>Catatan Sunyi</button>
   <button data-v="today" aria-pressed="false"><span class="ic">☀️</span>Hari Ini</button>
   <button data-v="progress" aria-pressed="false"><span class="ic">📈</span>Progress</button>
+  <button data-v="ilham" aria-pressed="false"><span class="ic">💡</span>Ilham</button>
   <button data-v="data" aria-pressed="false"><span class="ic">🗂️</span>Rekod</button>
 </nav>
 
@@ -736,7 +777,7 @@ let db = load();
 function load(){
   try{
     const raw = localStorage.getItem(KEY);
-    if(raw) { const d = JSON.parse(raw); d.entries??=[]; d.refl??={}; d.baik??=[]; d.targets??={...DEF_TARGET}; return d; }
+    if(raw) { const d = JSON.parse(raw); d.entries??=[]; d.refl??={}; d.baik??=[]; d.ilham??=[]; d.targets??={...DEF_TARGET}; return d; }
   }catch(e){}
   return {entries:[], refl:{}, baik:[], targets:{...DEF_TARGET}, reports:{}, settings:{}, created:today()};
 }
@@ -1275,6 +1316,8 @@ document.querySelector('nav').onclick = ev=>{
   document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-pressed', x===b));
   document.querySelectorAll('.view').forEach(v=> v.classList.toggle('active', v.id==='v-'+b.dataset.v));
   if(b.dataset.v==='baik') kira('sunyi_buka');
+  if(b.dataset.v==='ilham'){ kira('ilham_buka');
+    setTimeout(()=>document.getElementById('ilInput')?.focus({preventScroll:true}), 60); }
   scrollTo({top:0});
   renderAll();
 };
@@ -1303,7 +1346,7 @@ document.getElementById('fileIn').onchange = ev=>{
       const d = JSON.parse(rd.result);
       if(!Array.isArray(d.entries)) throw 0;
       db = {...d, entries:d.entries, refl:d.refl||{}, targets:{...DEF_TARGET, ...(d.targets||{})}, reports:d.reports||{}, memory:Object.assign({fakta:[],corak:[],janji:[],progression:'',updated:''}, d.memory||{}), settings:Object.assign({name:'',hour:21,auto:1,key:'',model:''}, d.settings||{})};
-      db.baik ??= [];
+      db.baik ??= []; db.ilham ??= [];
       window.db = db; syncSettings(); paintName();
       save(); renderAll(); toast('✓ Data dipulihkan');
     }catch(e){ toast('Fail tidak sah'); }
@@ -2469,7 +2512,7 @@ kira('buka_app');
   const q=new URLSearchParams(location.search).get('tab');
   const h=(location.hash||'').replace('#','');
   const peta={sunyi:'baik', baik:'baik', 'hari-ini':'today', today:'today',
-              progress:'progress', rekod:'data', data:'data'};
+              progress:'progress', rekod:'data', data:'data', ilham:'ilham', idea:'ilham'};
   const v=peta[q]||peta[h];
   if(!v) return;
   document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-pressed', x.dataset.v===v));
@@ -2688,8 +2731,145 @@ function maybeAutoReport(){
   genReport();
 }
 
+/* ─────────────  ILHAM  ─────────────
+   Idea yang terlintas sekelip mata — bisnes, ubah hidup, bantu masyarakat.
+   Disimpan dalam db.ilham di telefon ini sahaja. Teks ilham tidak pernah
+   dihantar ke mana-mana pelayan; kira() hanya menghantar nama peristiwa. */
+const IL_KUT = [
+  {id:'tinggi',    label:'Tinggi',    c:'var(--critical)'},
+  {id:'sederhana', label:'Sederhana', c:'var(--s4)'},
+  {id:'rendah',    label:'Rendah',    c:'var(--s1)'},
+];
+const IL_TAHAP = {tinggi:0, sederhana:1, rendah:2};
+const IL_REHAT = 'Penat? Tak apa, rehat dulu. Ilham kamu dah tersimpan. Tapi ingat — salah satu ilham ini mungkin akan mengubah masa depan kamu.';
+const IL_NOTA  = 'Tulis bila ia datang. Draf disimpan sendiri, dan ilham kamu kekal dalam telefon ini sahaja.';
+const ilBuka = new Set();   // kad yang sedang dibuka, supaya kekal terbuka selepas dikemas kini
+
+function ilList(){ db.ilham ??= []; return db.ilham; }
+function ilCari(id){ return ilList().find(x=>x.id===id); }
+/* esc() tidak melarikan tanda petikan; nilai dalam atribut perlukannya. */
+function escA(t){ return esc(t).replace(/"/g,'&quot;'); }
+
+/* Draf disimpan semasa menaip, supaya ilham separuh jalan tak hilang
+   walaupun app ditutup sebelum butang ditekan. */
+let ilDrafT = 0;
+function ilDrafSimpan(){
+  clearTimeout(ilDrafT); ilDrafT = 0;
+  const el = document.getElementById('ilInput'); if(!el) return;
+  if((db.ilhamDraf||'') === el.value) return;
+  db.ilhamDraf = el.value; save();
+}
+function ilDraf(){ clearTimeout(ilDrafT); ilDrafT = setTimeout(ilDrafSimpan, 400); }
+
+let ilNotaT = 0;
+function ilSimpan(){
+  const el = document.getElementById('ilInput');
+  const teks = el.value.trim();
+  if(!teks){ toast('Tulis ilham kamu dulu'); el.focus(); return; }
+  const ts = Date.now();
+  ilList().unshift({ id:ts+'-'+Math.random().toString(36).slice(2,7), teks, date:today(), ts, dikemas:ts,
+                     keutamaan:'', langkah:'', langkahSiap:[], status:'aktif' });
+  clearTimeout(ilDrafT); ilDrafT = 0;
+  el.value = ''; db.ilhamDraf = ''; save(); kira('ilham_baru');
+  renderIlham(); toast('✓ Ilham disimpan');
+  const note = document.getElementById('ilNote');
+  note.textContent = IL_REHAT;
+  clearTimeout(ilNotaT); ilNotaT = setTimeout(()=>{ note.textContent = IL_NOTA; }, 8000);
+}
+
+/* Tinggi di atas, kemudian Sederhana, Rendah, tanpa keutamaan; terbaru dahulu dalam setiap tahap. */
+function ilSusun(){
+  const r = x => IL_TAHAP[x.keutamaan] ?? 3;
+  return ilList().slice().sort((a,b)=> r(a)-r(b) || b.ts-a.ts);
+}
+
+function ilKad(x){
+  const k = IL_KUT.find(o=>o.id===x.keutamaan);
+  const id = escA(x.id);
+  const siap = x.langkahSiap||[];
+  const pilih = IL_KUT.map(o=>`<button class="chip" type="button" style="--c:${o.c}" data-il="kut" data-k="${o.id}"
+      aria-pressed="${x.keutamaan===o.id}"><span class="dot"></span>${o.label}</button>`).join('');
+  return `<div class="jb-item" data-id="${id}">
+    <div class="jb-head">
+      <div class="il-meta">${k?`<span class="il-kut" style="--c:${k.c}">${k.label}</span>`:''}<span>${relLabel(x.date)}</span></div>
+      <button class="jb-del" type="button" data-il="padam" aria-label="Padam ilham ini">✕</button>
+    </div>
+    <div class="t il-t">${esc(x.teks)}</div>
+    ${x.langkah ? `<div class="il-langkah"><div><small>Langkah seterusnya</small>${esc(x.langkah)}</div>
+        <button class="btn ghost" type="button" data-il="siap">✓ Siap</button></div>` : ''}
+    <details class="il-urus"${ilBuka.has(x.id)?' open':''}>
+      <summary>${x.keutamaan||x.langkah||siap.length ? 'Urus ilham ni' : 'Tetapkan keutamaan &amp; langkah seterusnya'}</summary>
+      <span class="il-lbl">Keutamaan</span>
+      <div class="il-pilih" role="group" aria-label="Keutamaan">${pilih}</div>
+      <label class="il-lbl" for="ilL-${id}">Langkah seterusnya</label>
+      <div class="il-baris">
+        <input type="text" id="ilL-${id}" class="il-in" maxlength="160" value="${escA(x.langkah)}"
+          placeholder="Satu tindakan kecil">
+        <button class="btn" type="button" data-il="langkah">Simpan</button>
+      </div>
+      ${siap.length ? `<div class="il-sejarah">Langkah yang dah siap:<ul>${siap.map(s=>
+          `<li>✓ ${esc(s.teks)} <i>· ${relLabel(s.date)}</i></li>`).join('')}</ul></div>` : ''}
+      <label class="il-lbl" for="ilE-${id}">Ubah ilham</label>
+      <textarea id="ilE-${id}" class="il-ubah" rows="3">${esc(x.teks)}</textarea>
+      <button class="btn ghost" type="button" data-il="ubah">Simpan perubahan</button>
+    </details>
+  </div>`;
+}
+
+function renderIlham(){
+  const box = document.getElementById('ilSenarai'); if(!box) return;
+  const list = ilSusun();
+  box.innerHTML = list.length
+    ? `<div class="jb-kira"><b>Ilham kamu</b></div>`
+      + list.map(ilKad).join('') + `<p class="il-rehat">${IL_REHAT}</p>`
+    : `<div class="jb-kosong">Belum ada ilham disimpan.<br>
+       Idea yang datang masa memandu, masa mandi, masa tak boleh tidur — tulis di atas sebelum ia hilang.
+       Mungkin itulah yang akan mengubah hidup kamu.</div>`;
+}
+
+document.getElementById('ilSave').onclick = ilSimpan;
+document.getElementById('ilInput').addEventListener('input', ilDraf);
+addEventListener('pagehide', ilDrafSimpan);
+document.addEventListener('visibilitychange', ()=>{ if(document.hidden) ilDrafSimpan(); });
+{ const el = document.getElementById('ilInput'); if(db.ilhamDraf) el.value = db.ilhamDraf; }
+
+/* 'toggle' tidak menggelegak, jadi didengar pada fasa tangkap. */
+document.getElementById('ilSenarai').addEventListener('toggle', e=>{
+  if(e.target.tagName!=='DETAILS') return;
+  const k = e.target.closest('[data-id]'); if(!k) return;
+  e.target.open ? ilBuka.add(k.dataset.id) : ilBuka.delete(k.dataset.id);
+}, true);
+document.getElementById('ilSenarai').addEventListener('keydown', e=>{
+  if(e.key==='Enter' && e.target.classList.contains('il-in')){
+    e.preventDefault(); e.target.closest('.il-baris').querySelector('[data-il="langkah"]').click();
+  }
+});
+document.getElementById('ilSenarai').addEventListener('click', ev=>{
+  const b = ev.target.closest('[data-il]'); if(!b) return;
+  const kad = b.closest('[data-id]'); const x = kad && ilCari(kad.dataset.id); if(!x) return;
+  const aksi = b.dataset.il;
+  if(aksi==='kut'){
+    x.keutamaan = x.keutamaan===b.dataset.k ? '' : b.dataset.k;
+  } else if(aksi==='langkah'){
+    x.langkah = kad.querySelector('.il-in').value.trim();
+    toast(x.langkah ? '✓ Langkah disimpan' : 'Langkah dikosongkan');
+  } else if(aksi==='siap'){
+    (x.langkahSiap ??= []).unshift({teks:x.langkah, date:today()});
+    x.langkah = ''; ilBuka.add(x.id); toast('✓ Satu langkah ke depan');
+  } else if(aksi==='ubah'){
+    const t = kad.querySelector('.il-ubah').value.trim();
+    if(!t){ toast('Ilham tak boleh kosong'); return; }
+    x.teks = t; toast('✓ Ilham dikemas kini');
+  } else if(aksi==='padam'){
+    if(!confirm('Padam ilham ini? Tindakan ini tak boleh dibatalkan.')) return;
+    db.ilham = ilList().filter(y=>y!==x); ilBuka.delete(x.id);
+    save(); renderIlham(); toast('Ilham dipadam'); return;
+  } else return;
+  x.dikemas = Date.now(); save(); renderIlham();
+});
+
 function renderAll(){
-  try{ jbRender(); sunyiHistori(); }catch(e){} renderToday(); chartWeek(); chartCats(); renderTargets(); chartHeat(); renderHistory(); renderRepCard(); renderMemory(); }
+  try{ jbRender(); sunyiHistori(); }catch(e){} try{ renderIlham(); }catch(e){} renderToday(); chartWeek(); chartCats(); renderTargets(); chartHeat(); renderHistory(); renderRepCard(); renderMemory(); }
 syncSettings();
 syncDateBanner();
 mirrorState().catch(()=>{});
@@ -2700,7 +2880,7 @@ if(!(db.settings.name||'').trim()) setTimeout(askName, 400);
 else setTimeout(maybeAutoReport, 700);
 
 /* ─────────────  PWA  ───────────── */
-const APP_VERSION = '2026.08.29k';
+const APP_VERSION = '2026.10.07a';
 if('serviceWorker' in navigator && location.protocol.startsWith('http')){
   addEventListener('load', ()=> navigator.serviceWorker.register('sw.js').catch(()=>{}));
 }

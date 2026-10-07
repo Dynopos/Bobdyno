@@ -1,7 +1,7 @@
 /* Bob — Self Development Apps · service worker v3
    HTML: network-first (deploy baru muncul serta-merta)
    Aset lain: cache-first (laju + offline) */
-const VERSION = 'v30';
+const VERSION = 'v31';
 const CACHE = 'bobapp-' + VERSION;
 const ASSETS = [
   './', './index.html', './manifest.json',
